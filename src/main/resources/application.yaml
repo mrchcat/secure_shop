@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/intershop
+    username: postgres
+    password: Inushing1980
+    driverClassName: org.postgresql.Driver
+  sql:
+    init.mode: always
+  jpa:
+    open-in-view: false
+#    defer-datasource-initialization: true
+    hibernate.ddl-auto: validate
+    properties.hibernate:
+      show_sql: true
+      format_sql: true
+      highlight_sql: true
+      cache:
+        use_second_level_cache: true
+        region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+  #        provider_class: org.ehcache.jsr107.EhcacheCachingProvider
+  transaction:
+    default-timeout: 3
+    rollback-on-commit-failure: true
