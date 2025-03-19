@@ -36,14 +36,13 @@ public class ItemController {
                               @RequestParam(name = "search", defaultValue = "") String search,
                               @RequestParam(name = "sort", defaultValue = "NO") SortOrder sort,
                               @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
-                              @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
+                              @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort.sort);
         MainItemsDto dto = itemService.getItems(search, pageable);
-
-//        dto.getPage().getSize()
         model.addAttribute("paging", dto.getPage());
         model.addAttribute("items", dto.getItems());
+        model.addAttribute("sort", sort.toString());
 
         return "main";
     }

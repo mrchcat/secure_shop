@@ -40,9 +40,9 @@
                         </select>
                     </p>
                     <p>
-                        <button th:if="${paging.hasPrevious()}" name="pageNumber" th:value="${paging.getNumber()-1}">&lt;</button>
-                        <span th:text="${'Страница: '+paging.getNumber()}"></span>
-                        <button th:if="${paging.hasNext()}" name="pageNumber" th:value="${paging.getNumber()+1}">&gt;</button>
+                        <button th:if="${paging.hasPrevious()}" name="pageNumber" th:value="${paging.getNumber()}">&lt;</button>
+                        <span th:text="${'Страница: '+paging.getNumber()+1}"></span>
+                        <button th:if="${paging.hasNext()}" name="pageNumber" th:value="${paging.getNumber()+2}">&gt;</button>
                     </p>
                 </form>
             </td>

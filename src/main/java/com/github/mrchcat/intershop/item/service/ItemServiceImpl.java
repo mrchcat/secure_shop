@@ -34,12 +34,14 @@ public class ItemServiceImpl implements ItemService {
         Page<Item> itemPage = (search.isBlank())
                 ? itemRepository.findAll(pageable)
                 : itemRepository.findAllWithSearch(search, pageable);
-        List<Item> itemList = itemPage.getContent();
 
+        List<Item> itemList = itemPage.getContent();
         List<List<Item>> itemsToShow = new ArrayList<>();
-        for (int i = 0; i < itemList.size(); i = i + 3) {
-            itemsToShow.add(itemList.subList(i, i + 3));
+        int fullSteps = itemList.size() / 3;
+        for (int i = 0; i < fullSteps; i++) {
+            itemsToShow.add(itemList.subList(i * 3, i * 3 + 3));
         }
+        itemsToShow.add(itemList.subList(fullSteps*3, itemList.size()));
         return MainItemsDto.builder()
                 .items(itemsToShow)
                 .page(itemPage)
