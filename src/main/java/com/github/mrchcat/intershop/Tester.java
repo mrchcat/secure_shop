@@ -3,7 +3,7 @@ package com.github.mrchcat.intershop;
 import com.github.mrchcat.intershop.enums.Unit;
 import com.github.mrchcat.intershop.order.domain.Order;
 import com.github.mrchcat.intershop.order.domain.OrderItem;
-import com.github.mrchcat.intershop.product.domain.Item;
+import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.user.domain.User;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
@@ -25,20 +25,20 @@ public class Tester {
         long milkId;
         EntityManager em = entityManagerFactory.createEntityManager();
         Item milk = Item.builder()
-                .name("молоко")
+                .title("молоко")
                 .description("Молоко жирностью 3,5%")
-                .picture(new byte[]{123})
-                .basePrice(BigDecimal.valueOf(1434, 2))
-                .quantityOnStock(10)
+//                .picture(new byte[]{123})
+                .price(BigDecimal.valueOf(1434, 2))
+                .count(10)
                 .unit(Unit.PIECE)
                 .build();
 
         Item vodka = Item.builder()
-                .name("водка")
+                .title("водка")
                 .description("Водка крепостью 40 градусов")
-                .picture(new byte[]{123})
-                .basePrice(BigDecimal.valueOf(56434, 2))
-                .quantityOnStock(200)
+//                .picture(new byte[]{123})
+                .price(BigDecimal.valueOf(56434, 2))
+                .count(200)
                 .unit(Unit.PIECE)
                 .build();
 
@@ -52,26 +52,26 @@ public class Tester {
         firstOrder.setUser(anna);
 
         long milkOrderQuantity = 1;
-        milk.setQuantityOnStock(milk.getQuantityOnStock() - milkOrderQuantity);
+        milk.setCount(milk.getCount() - milkOrderQuantity);
 
         OrderItem milkOrder = OrderItem.builder()
                 .order(firstOrder)
                 .item(milk)
-                .orderPrice(milk.getBasePrice())
+                .orderPrice(milk.getPrice())
                 .quantity(milkOrderQuantity)
                 .unit(Unit.PIECE)
-                .sum(milk.getBasePrice().multiply(BigDecimal.valueOf(milkOrderQuantity)))
+                .sum(milk.getPrice().multiply(BigDecimal.valueOf(milkOrderQuantity)))
                 .build();
 
         long vodkaOrderQuantity = 10;
-        vodka.setQuantityOnStock(vodka.getQuantityOnStock() - vodkaOrderQuantity);
+        vodka.setCount(vodka.getCount() - vodkaOrderQuantity);
         OrderItem vodkaOrder = OrderItem.builder()
                 .order(firstOrder)
                 .item(vodka)
-                .orderPrice(vodka.getBasePrice())
+                .orderPrice(vodka.getPrice())
                 .quantity(vodkaOrderQuantity)
                 .unit(Unit.PIECE)
-                .sum(vodka.getBasePrice().multiply(BigDecimal.valueOf(vodkaOrderQuantity)))
+                .sum(vodka.getPrice().multiply(BigDecimal.valueOf(vodkaOrderQuantity)))
                 .build();
 
         Set<OrderItem> orderItems = Set.of(milkOrder, vodkaOrder);
@@ -92,9 +92,8 @@ public class Tester {
         em.persist(milkOrder);
 
         milkId = milk.getId();
-        long userId=anna.getId();
-
         em.getTransaction().commit();
+        long userId=anna.getId();
         em.close();
 
         //****************
@@ -109,12 +108,23 @@ public class Tester {
         Item item2 = em.find(Item.class, milkId);
         System.out.println(item1 == item2);
         System.out.println(item1);
+        em.close();
 
-        anna=em.find(User.class,userId);
+        em=entityManagerFactory.createEntityManager();
+        anna=em.find(User.class, 1L);
+        System.out.println(anna);
         Order annaBasket=new Order();
-        anna.setBasket(annaBasket);
-        em.persist(anna);
+        annaBasket.setNumber("basket");
+        annaBasket.setUser(anna);
+        annaBasket.setTotalSum(BigDecimal.valueOf(11L));
+        em.getTransaction().begin();
         em.persist(annaBasket);
+
+//        em.persist(annaBasket);
+//        anna.setBasket(annaBasket);
+//        em.persist(anna);
+        em.getTransaction().commit();
+        em.close();
         entityManagerFactory.close();
     }
 }

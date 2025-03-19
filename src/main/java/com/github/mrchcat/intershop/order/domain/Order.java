@@ -53,14 +53,14 @@ public class Order {
     private long id;
 
     @Column(name = "number", nullable = false, length = 256)
-    @NotNull
-    @NotBlank
-    @Length(max = 256)
+    @NotNull(message = "поле номера не может быть пустым")
+    @NotBlank (message = "поле номера не может быть пустым")
+    @Length(max = 256, message = "поле номера не может быть больше 256 знаков")
     private String number;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @NotNull
+    @NotNull(message = "заказ должен иметь пользователя")
     User user;
 
     @Column(name = "created")
@@ -72,7 +72,7 @@ public class Order {
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @Column(name = "total_sum")
-    @PositiveOrZero
+    @PositiveOrZero(message = "сумма заказа не может быть отрицательным числом")
     private BigDecimal totalSum;
 
 }

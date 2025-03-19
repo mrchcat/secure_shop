@@ -21,3 +21,12 @@ spring:
   transaction:
     default-timeout: 3
     rollback-on-commit-failure: true
+
+logging:
+  pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
+  level:
+    root: DEBUG
+    org.zalando.logbook: INFO
+
+application:
+  items.perline: 3

@@ -1,7 +1,7 @@
 package com.github.mrchcat.intershop.order.domain;
 
 import com.github.mrchcat.intershop.enums.Unit;
-import com.github.mrchcat.intershop.product.domain.Item;
+import com.github.mrchcat.intershop.item.domain.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
