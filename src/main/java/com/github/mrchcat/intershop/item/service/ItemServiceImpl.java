@@ -37,11 +37,11 @@ public class ItemServiceImpl implements ItemService {
 
         List<Item> itemList = itemPage.getContent();
         List<List<Item>> itemsToShow = new ArrayList<>();
-        int fullSteps = itemList.size() / 3;
-        for (int i = 0; i < fullSteps; i++) {
-            itemsToShow.add(itemList.subList(i * 3, i * 3 + 3));
+        int fullRows = itemList.size() / itemsPerLine;
+        for (int i = 0; i < fullRows * itemsPerLine; i = i + itemsPerLine) {
+            itemsToShow.add(itemList.subList(i, i + itemsPerLine));
         }
-        itemsToShow.add(itemList.subList(fullSteps*3, itemList.size()));
+        itemsToShow.add(itemList.subList(fullRows * itemsPerLine, itemList.size()));
         return MainItemsDto.builder()
                 .items(itemsToShow)
                 .page(itemPage)
