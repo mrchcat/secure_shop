@@ -1,6 +1,17 @@
 INSERT INTO users (email,name,basket_order)
 VALUES ('anna@mail.ru','Anna',null),('boris@mail.ru','Boris',null);
 
+INSERT INTO orders (user_id)
+VALUES (1),(2);
+
+UPDATE users
+SET basket_order=1
+WHERE id=1;
+
+UPDATE users
+SET basket_order=2
+WHERE id=2;
+
 INSERT INTO items(article_number, name,description,picture_path,price,stock_quantity,unit)
 VALUES ('16763be4-6022-406e-a950-fcd5018633ca','Ветровка BRADLY Мода и стиль','Удобная осенняя и весенняя, она подходит для прохладных дней, а также для переходного сезона осень-зима-весна. Эта водоотталкивающая верхняя одежда непромокаемая и обладает ветрозащитными свойствами, а наличие мембраны позволяет отводить влагу и не потеть. Размерный ряд расширен до больших размеров, со съемным капюшоном, воротник стойка. Капюшон отстегивается, карманы на молнии, манжеты на кнопках.','images/16763be4-6022-406e-a950-fcd5018633ca.png',14200,1,'PIECE');
 

@@ -52,8 +52,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "number", nullable = false, length = 256)
-    @NotNull(message = "поле номера не может быть пустым")
+    @Column(name = "number",length = 256)
+//    @NotNull(message = "поле номера не может быть пустым")
     @NotBlank (message = "поле номера не может быть пустым")
     @Length(max = 256, message = "поле номера не может быть больше 256 знаков")
     private String number;
@@ -64,7 +64,7 @@ public class Order {
     User user;
 
     @Column(name = "created")
-    @CreationTimestamp
+//    @CreationTimestamp
     private LocalDateTime created;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
