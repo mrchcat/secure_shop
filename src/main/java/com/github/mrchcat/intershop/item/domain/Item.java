@@ -12,12 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Length;
@@ -31,6 +26,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
 @Entity
 @Table(name = "items")
@@ -38,6 +34,7 @@ import java.util.UUID;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private long id;
 
     @Column(name = "article_number")
@@ -61,11 +58,6 @@ public class Item {
     @NotNull
     @PositiveOrZero
     private BigDecimal price;
-
-    @Column(name = "stock_quantity", nullable = false)
-    @NotNull
-    @PositiveOrZero
-    private long count;
 
     @Column(name = "unit", nullable = false)
     @Enumerated(EnumType.STRING)

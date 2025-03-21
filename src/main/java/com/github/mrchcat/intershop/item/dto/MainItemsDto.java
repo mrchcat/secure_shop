@@ -10,6 +10,6 @@ import java.util.List;
 @Builder
 @Getter
 public class MainItemsDto {
-    List<List<Item>> items;
-    Page<Item> page;
+    private List<List<ItemDto>> items;
+    private Page<ItemDto> page;
 }

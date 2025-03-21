@@ -3,6 +3,7 @@ package com.github.mrchcat.intershop.item.controller;
 import com.github.mrchcat.intershop.enums.BasketAction;
 import com.github.mrchcat.intershop.enums.SortOrder;
 import com.github.mrchcat.intershop.item.domain.Item;
+import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.MainItemsDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
+    private final long userId = 1;
 
     @GetMapping("/")
     public String redirectToAllItems(Model model) {
@@ -33,7 +35,7 @@ public class ItemController {
     @GetMapping("/items/{id}")
     public String getItem(Model model,
                           @PathVariable("id") long itemId) {
-        Item item = itemService.getItem(itemId);
+        ItemDto item = itemService.getItem(userId, itemId);
         model.addAttribute("item", item);
         return "item";
     }
@@ -46,7 +48,7 @@ public class ItemController {
                               @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort.sort);
-        MainItemsDto dto = itemService.getItems(search, pageable);
+        MainItemsDto dto = itemService.getItems(userId, search, pageable);
         model.addAttribute("paging", dto.getPage());
         model.addAttribute("items", dto.getItems());
         model.addAttribute("sort", sort.toString());
@@ -56,7 +58,7 @@ public class ItemController {
     @PostMapping("/main/items/{id}")
     void changeBasket(Model model,
                       @PathVariable("id") long itemId,
-                      @RequestParam("action") BasketAction action){
+                      @RequestParam("action") BasketAction action) {
 
     }
 

@@ -51,7 +51,7 @@ public class User {
     String name;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "basket_order")
     Order basket;
 }
