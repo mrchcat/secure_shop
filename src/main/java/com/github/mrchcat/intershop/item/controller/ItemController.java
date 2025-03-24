@@ -1,24 +1,19 @@
 package com.github.mrchcat.intershop.item.controller;
 
-import com.github.mrchcat.intershop.enums.BasketAction;
+import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.enums.SortOrder;
-import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.MainItemsDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,6 +35,14 @@ public class ItemController {
         return "item";
     }
 
+    @PostMapping("/items/{id}")
+    public String updateCartInItem(Model model,
+                                   @PathVariable("id") long itemId,
+                                   @RequestParam("action") CartAction action) {
+        itemService.changeCart(userId, itemId, action);
+        return "redirect:/items/" + itemId;
+    }
+
     @GetMapping("/main/items")
     public String getAllItems(Model model,
                               @RequestParam(name = "search", defaultValue = "") String search,
@@ -55,11 +58,12 @@ public class ItemController {
         return "main";
     }
 
-    @PostMapping("/main/items/{id}")
-    void changeBasket(Model model,
-                      @PathVariable("id") long itemId,
-                      @RequestParam("action") BasketAction action) {
-
+    @PostMapping("main/items/{id}")
+    public String updateCartInMain(Model model,
+                                   @PathVariable("id") long itemId,
+                                   @RequestParam("action") CartAction action) {
+        itemService.changeCart(userId, itemId, action);
+        return "redirect:/main/items";
     }
 
 }

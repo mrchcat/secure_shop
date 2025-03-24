@@ -14,14 +14,11 @@ import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Cache;
@@ -39,35 +36,33 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(name = "orders")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 
-//@NamedEntityGraph(name = "graph.order", attributeNodes = @NamedAttributeNode("orderItems"))
 @NamedEntityGraph(name = "graph.order.items",
         attributeNodes = @NamedAttributeNode(value = "orderItems", subgraph = "items"),
         subgraphs = @NamedSubgraph(name = "items", attributeNodes = @NamedAttributeNode("item")))
-
 
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "number",length = 256)
-//    @NotNull(message = "поле номера не может быть пустым")
-    @NotBlank (message = "поле номера не может быть пустым")
+    @Column(name = "number", length = 256)
+    @NotNull(message = "поле номера не может быть пустым")
+    @NotBlank(message = "поле номера не может быть пустым")
     @Length(max = 256, message = "поле номера не может быть больше 256 знаков")
     private String number;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "заказ должен иметь пользователя")
+    @ToString.Exclude
     User user;
 
     @Column(name = "created")
-//    @CreationTimestamp
+    @CreationTimestamp
     private LocalDateTime created;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<OrderItem> orderItems = new HashSet<>();
 

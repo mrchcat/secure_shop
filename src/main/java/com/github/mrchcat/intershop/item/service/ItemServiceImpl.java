@@ -1,16 +1,12 @@
 package com.github.mrchcat.intershop.item.service;
 
+import com.github.mrchcat.intershop.cart.service.CartService;
+import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.MainItemsDto;
 import com.github.mrchcat.intershop.item.matcher.ItemMatcher;
 import com.github.mrchcat.intershop.item.repository.ItemRepository;
-import com.github.mrchcat.intershop.order.domain.Order;
-import com.github.mrchcat.intershop.order.domain.OrderItem;
-import com.github.mrchcat.intershop.order.service.OrderService;
-import com.github.mrchcat.intershop.user.domain.User;
-import com.github.mrchcat.intershop.user.repository.UserRepository;
-import com.github.mrchcat.intershop.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,16 +14,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Setter
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
-    private final OrderService orderService;
+    private final CartService cartService;
 
     @Value("${application.items.perline:3}")
     private int itemsPerLine;
@@ -37,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository
                 .findById(itemId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("товар c id=%s не найден", itemId)));
-        return ItemMatcher.toDto(item, orderService.getBasketCountsForUser(userId));
+        return ItemMatcher.toDto(item, cartService.getCartItemsForUser(userId));
     }
 
     @Override
@@ -47,7 +45,7 @@ public class ItemServiceImpl implements ItemService {
                 : itemRepository.findAllWithSearch(search, pageable);
 
         List<Item> itemList = itemPage.getContent();
-        List<ItemDto> itemDtoList = ItemMatcher.toDto(itemList,orderService.getBasketCountsForUser(userId));
+        List<ItemDto> itemDtoList = ItemMatcher.toDto(itemList, cartService.getCartItemsForUser(userId));
 
         List<List<ItemDto>> itemDtosToShow = new ArrayList<>();
         int fullRows = itemDtoList.size() / itemsPerLine;
@@ -63,13 +61,12 @@ public class ItemServiceImpl implements ItemService {
                 .build();
     }
 
-    private Map<Item, Long> getBasketCountsForUser(User user) {
-        Set<OrderItem> oiSet = user.getBasket().getOrderItems();
-        if (oiSet.isEmpty()) {
-            return Collections.emptyMap();
-        }
-        return oiSet.stream()
-                .collect(Collectors.toMap(OrderItem::getItem, OrderItem::getQuantity));
+    @Override
+    @Transactional
+    public void changeCart(long userId, long itemId, CartAction action) {
+        Item item = itemRepository
+                .findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException(String.format("товар c id=%s не найден", itemId)));
+        cartService.changeCart(userId, item, action);
     }
-
 }

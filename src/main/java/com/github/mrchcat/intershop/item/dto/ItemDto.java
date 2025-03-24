@@ -12,10 +12,13 @@ import java.math.BigDecimal;
 
 public class ItemDto {
 
+    private long id;
     private String title;
     private String description;
     private String imgPath;
     private BigDecimal price;
     private long count;
+    boolean inCart;
     private Unit unit;
+
 }
