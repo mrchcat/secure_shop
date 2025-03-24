@@ -1,4 +1,4 @@
-package com.github.mrchcat.intershop.matcher;
+package com.github.mrchcat.intershop.cart.matcher;
 
 import com.github.mrchcat.intershop.cart.domain.CartItem;
 import com.github.mrchcat.intershop.item.dto.ItemDto;

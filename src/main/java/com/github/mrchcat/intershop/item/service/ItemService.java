@@ -1,7 +1,6 @@
 package com.github.mrchcat.intershop.item.service;
 
 import com.github.mrchcat.intershop.enums.CartAction;
-import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.MainItemsDto;
 import org.springframework.data.domain.Pageable;

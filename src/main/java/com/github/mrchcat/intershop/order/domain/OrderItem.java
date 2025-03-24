@@ -69,14 +69,15 @@ public class OrderItem {
     @Column(name = "sum")
     private BigDecimal sum;
 
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof OrderItem orderItem)) return false;
-        return id == orderItem.id;
+        return Objects.equals(order, orderItem.order) && Objects.equals(item, orderItem.item);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(order, item);
     }
 }

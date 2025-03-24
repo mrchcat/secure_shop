@@ -20,7 +20,6 @@ import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 

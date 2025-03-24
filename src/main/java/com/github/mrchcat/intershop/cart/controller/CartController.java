@@ -3,8 +3,6 @@ package com.github.mrchcat.intershop.cart.controller;
 import com.github.mrchcat.intershop.cart.dto.CartItemsDto;
 import com.github.mrchcat.intershop.cart.service.CartService;
 import com.github.mrchcat.intershop.enums.CartAction;
-import com.github.mrchcat.intershop.item.dto.ItemDto;
-import com.github.mrchcat.intershop.item.dto.MainItemsDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,5 +35,12 @@ public class CartController {
         itemService.changeCart(userId, itemId, action);
         return "redirect:/cart/items";
     }
+
+    @PostMapping("/buy")
+    public String buyCart() {
+        long orderId = cartService.buyCart(userId);
+        return "redirect:/orders/" + orderId + "?newOrder=true";
+    }
+
 
 }

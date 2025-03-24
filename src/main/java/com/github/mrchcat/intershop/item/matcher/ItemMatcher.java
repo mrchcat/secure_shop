@@ -40,6 +40,16 @@ public class ItemMatcher {
                 .build();
     }
 
+    public static ItemDto toDto(Item item) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .title(item.getTitle())
+                .description(item.getDescription())
+                .price(item.getPrice())
+                .imgPath(item.getImgPath())
+                .unit(item.getUnit())
+                .build();
+    }
 
 
 }

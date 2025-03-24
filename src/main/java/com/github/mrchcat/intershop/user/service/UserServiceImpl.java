@@ -3,8 +3,10 @@ package com.github.mrchcat.intershop.user.service;
 import com.github.mrchcat.intershop.user.domain.User;
 import com.github.mrchcat.intershop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
+@Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 

@@ -21,6 +21,8 @@ spring:
       show_sql: false
       format_sql: true
       highlight_sql: true
+      jdbc.batch_size: 20
+      order_updates: true
       cache:
         use_second_level_cache: false
         region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
