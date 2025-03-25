@@ -52,12 +52,10 @@ public class ItemServiceImpl implements ItemService {
         for (int i = 0; i < fullRows * itemsPerLine; i = i + itemsPerLine) {
             itemDtosToShow.add(itemDtoList.subList(i, i + itemsPerLine));
         }
-
         itemDtosToShow.add(itemDtoList.subList(fullRows * itemsPerLine, itemDtoList.size()));
-        Page<ItemDto> itemDtoPage=new PageImpl<>(itemDtoList,itemPage.getPageable(),itemPage.getTotalPages());
         return MainItemsDto.builder()
                 .items(itemDtosToShow)
-                .page(itemDtoPage)
+                .page(itemPage)
                 .build();
     }
 

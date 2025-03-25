@@ -12,7 +12,8 @@ public interface ItemRepository extends PagingAndSortingRepository<Item, Long>, 
     @Query("""
     SELECT i
     FROM Item AS i
-    WHERE i.title LIKE CONCAT('%',:search,'%') OR i.description LIKE CONCAT('%',:search,'%')
+    WHERE LOWER(i.title) LIKE LOWER(CONCAT('%',:search,'%'))
+       OR LOWER(i.description) LIKE LOWER(CONCAT('%',:search,'%'))
     """)
     Page<Item> findAllWithSearch(String search, Pageable pageable);
 

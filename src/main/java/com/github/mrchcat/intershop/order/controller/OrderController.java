@@ -3,6 +3,7 @@ package com.github.mrchcat.intershop.order.controller;
 import com.github.mrchcat.intershop.order.dto.OrderDto;
 import com.github.mrchcat.intershop.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    private final long userId = 1;
+
+    @Value("${application.user_id}")
+    private long userId;
 
     @GetMapping("/orders")
     String getOrders(Model model) {

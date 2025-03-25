@@ -5,6 +5,7 @@ import com.github.mrchcat.intershop.cart.service.CartService;
 import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CartController {
     private final CartService cartService;
     private final ItemService itemService;
-    private final long userId = 1;
+
+    @Value("${application.user_id}")
+    private long userId;
 
     @GetMapping("/cart/items")
     public String getCartItems(Model model) {

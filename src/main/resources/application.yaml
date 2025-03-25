@@ -39,3 +39,4 @@ logging:
 
 application:
   items.perline: 3
+  user_id: 1

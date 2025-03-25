@@ -6,6 +6,8 @@ import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.MainItemsDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -17,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class ItemController {
 
     private final ItemService itemService;
-    private final long userId = 1;
+
+    @Value("${application.user_id}")
+    private long userId;
 
     @GetMapping("/")
     public String redirectToAllItems(Model model) {
@@ -55,6 +60,9 @@ public class ItemController {
         model.addAttribute("paging", dto.getPage());
         model.addAttribute("items", dto.getItems());
         model.addAttribute("sort", sort.toString());
+        log.info(String.valueOf(dto.getPage().hasPrevious()));
+        log.info(String.valueOf(dto.getPage().hasNext()));
+        log.info(String.valueOf(dto.getPage().getNumber()));
         return "main";
     }
 
