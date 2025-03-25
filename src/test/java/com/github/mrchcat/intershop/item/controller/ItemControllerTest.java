@@ -28,9 +28,6 @@ class ItemControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    ItemRepository itemRepository;
-
     @Test
     void testMain() throws Exception {
         mockMvc.perform(get("/"))

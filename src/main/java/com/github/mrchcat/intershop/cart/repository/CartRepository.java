@@ -14,7 +14,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
             FROM Cart AS c
             WHERE c.user.id=:userId
             """)
-        @EntityGraph("graph.cart.items")
+    @EntityGraph("graph.cart.items")
     Optional<Cart> findByUserId(long userId);
 
 }

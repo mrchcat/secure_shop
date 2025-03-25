@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public class OrderItemMatcher {
-    public static OrderItemDto toDto(OrderItem orderItem){
+    public static OrderItemDto toDto(OrderItem orderItem) {
         return OrderItemDto.builder()
                 .item(ItemMatcher.toDto(orderItem.getItem()))
                 .count(orderItem.getQuantity())
@@ -18,9 +18,9 @@ public class OrderItemMatcher {
                 .build();
     }
 
-    public static List<OrderItemDto> toDto(Set<OrderItem> orderItems){
-        ArrayList<OrderItemDto> list=new ArrayList<>();
-        for(OrderItem oi:orderItems){
+    public static List<OrderItemDto> toDto(Set<OrderItem> orderItems) {
+        ArrayList<OrderItemDto> list = new ArrayList<>();
+        for (OrderItem oi : orderItems) {
             list.add(toDto(oi));
         }
         return list;
