@@ -1,0 +1,37 @@
+services:
+  intershop-database:
+    image: postgres:17.4
+    container_name: postgres
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=intershopdb
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=12345
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+    networks:
+      - backend
+
+  intershop-service:
+    build: ./
+    image: intershop
+    container_name: intershop
+    ports:
+      - "8080:8080"
+    depends_on:
+      intershop-database:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://intershop-database:5432/intershopdb
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_DATASOURCE_DRIVER=org.postgresql.Driver
+    networks:
+      - backend
+
+networks:
+  backend:
