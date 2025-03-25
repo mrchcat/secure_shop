@@ -45,5 +45,4 @@ public class CartController {
         return "redirect:/orders/" + orderId + "?newOrder=true";
     }
 
-
 }

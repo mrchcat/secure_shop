@@ -15,7 +15,6 @@ import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -29,7 +28,6 @@ import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -52,8 +50,6 @@ public class Order {
     private long id;
 
     @Column(name = "number", length = 256)
-    @NotNull(message = "поле номера не может быть пустым")
-    @NotBlank(message = "поле номера не может быть пустым")
     @Length(max = 256, message = "поле номера не может быть больше 256 знаков")
     private String number;
 
@@ -61,7 +57,7 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "заказ должен иметь пользователя")
     @ToString.Exclude
-    User user;
+    private User user;
 
     @Column(name = "created")
     @CreationTimestamp

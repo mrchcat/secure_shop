@@ -35,15 +35,15 @@ public class CartItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
     @NotNull
-    Cart cart;
+    private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = false)
     @NotNull
-    Item item;
+    private Item item;
 
     @Column(name = "quantity")
-    long quantity;
+    private long quantity;
 
     @Override
     public boolean equals(Object o) {

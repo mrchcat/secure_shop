@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @Getter
 public class CartItemsDto {
-    List<ItemDto> itemDtoList;
-    BigDecimal total;
-    boolean isCartEmpty;
+    private List<ItemDto> itemDtoList;
+    private BigDecimal total;
+    private boolean isCartEmpty;
 }

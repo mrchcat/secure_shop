@@ -35,11 +35,11 @@ public class User {
     @NotNull
     @Length(max = 256)
     @Email
-    String email;
+    private String email;
 
     @Column(name = "name", nullable = false)
     @NotNull
     @NotBlank
     @Length(max = 256)
-    String name;
+    private String name;
 }

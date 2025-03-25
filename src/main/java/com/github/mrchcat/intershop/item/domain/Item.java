@@ -44,7 +44,7 @@ public class Item {
     private long id;
 
     @Column(name = "article_number")
-    UUID articleNumber;
+    private UUID articleNumber;
 
     @Column(name = "name", nullable = false, length = 256)
     @NotNull

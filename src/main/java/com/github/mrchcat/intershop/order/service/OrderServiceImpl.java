@@ -20,7 +20,6 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order makeNewOrder(User user) {
         Order order = Order.builder()
-                .number("заказ №")
                 .user(user)
                 .build();
         return orderRepository.save(order);

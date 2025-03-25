@@ -3,11 +3,10 @@ package com.github.mrchcat.intershop.cart.service;
 import com.github.mrchcat.intershop.cart.domain.Cart;
 import com.github.mrchcat.intershop.cart.domain.CartItem;
 import com.github.mrchcat.intershop.cart.dto.CartItemsDto;
+import com.github.mrchcat.intershop.cart.matcher.CartItemMatcher;
 import com.github.mrchcat.intershop.cart.repository.CartRepository;
 import com.github.mrchcat.intershop.enums.CartAction;
-import com.github.mrchcat.intershop.enums.Unit;
 import com.github.mrchcat.intershop.item.domain.Item;
-import com.github.mrchcat.intershop.cart.matcher.CartItemMatcher;
 import com.github.mrchcat.intershop.order.domain.Order;
 import com.github.mrchcat.intershop.order.domain.OrderItem;
 import com.github.mrchcat.intershop.order.repository.OrderRepository;
@@ -20,10 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,21 +38,17 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Map<Item, Long> getCartItemsForUser(long userId) {
-        List<Cart> carts = cartRepository.findAllByUserId(userId);
-        checkCarts(carts, userId);
-        return carts.getFirst()
+        Cart cart = cartRepository.findByUserId(userId).orElseThrow(() -> new NoSuchElementException("cart not found"));
+        return cart
                 .getCartItems()
                 .stream()
                 .collect(Collectors.toMap(CartItem::getItem, CartItem::getQuantity));
     }
 
-
     @Override
     @Transactional
     public void changeCart(long userId, Item item, CartAction action) {
-        List<Cart> carts = cartRepository.findAllByUserId(userId);
-        checkCarts(carts, userId);
-        Cart cart = carts.getFirst();
+        Cart cart = cartRepository.findByUserId(userId).orElseThrow(() -> new NoSuchElementException("cart not found"));
         CartItem newCartItem = CartItem.builder()
                 .cart(cart)
                 .item(item)
@@ -89,16 +86,14 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartItemsDto getCartItems(long userId) {
-        List<Cart> carts = cartRepository.findAllByUserId(userId);
-        checkCarts(carts, userId);
-        Set<CartItem> cartItems = carts.getFirst().getCartItems();
+        Cart cart = cartRepository.findByUserId(userId).orElseThrow(() -> new NoSuchElementException("cart not found"));
+        Set<CartItem> cartItems = cart.getCartItems();
         if (cartItems.isEmpty()) {
-            CartItemsDto build = CartItemsDto.builder()
+            return CartItemsDto.builder()
                     .itemDtoList(Collections.emptyList())
                     .isCartEmpty(true)
                     .total(BigDecimal.ZERO)
                     .build();
-            return build;
         }
         BigDecimal total = cartItems.stream()
                 .map(ci -> ci.getItem().getPrice().multiply(BigDecimal.valueOf(ci.getQuantity())))
@@ -116,10 +111,7 @@ public class CartServiceImpl implements CartService {
     public long buyCart(long userId) {
         User user = userService.getUser(userId);
         Order order = orderService.makeNewOrder(user);
-        List<Cart> carts = cartRepository.findAllByUserId(userId);
-        checkCarts(carts, userId);
-
-        Cart cart = carts.getFirst();
+        Cart cart = cartRepository.findByUserId(userId).orElseThrow(() -> new NoSuchElementException("cart not found"));
         Set<CartItem> cartItems = cart.getCartItems();
         if (cartItems.isEmpty()) {
             throw new RuntimeException("cart is empty");
@@ -142,6 +134,7 @@ public class CartServiceImpl implements CartService {
             orderItemHashSet.add(oi);
             total = total.add(sum);
         }
+        order.setNumber(generateOrderNumber(order));
         order.setOrderItems(orderItemHashSet);
         order.setTotalSum(total);
         orderRepository.save(order);
@@ -150,7 +143,6 @@ public class CartServiceImpl implements CartService {
         return order.getId();
     }
 
-
     private CartItem getCartItem(Set<CartItem> cartItems, CartItem cartItem) {
         return cartItems.stream()
                 .filter(ci -> ci.equals(cartItem))
@@ -158,13 +150,10 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(InternalException::new);
     }
 
-    private void checkCarts(List<Cart> carts, long userId) {
-        if (carts.isEmpty()) {
-            throw new InternalException("корзина отсутствует для пользователя " + userId);
-        }
-        if (carts.size() > 1) {
-            throw new UnsupportedOperationException("множественные корзины для пользователя " + userId);
-        }
+    private String generateOrderNumber(Order order) {
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedString = date.format(formatter);
+        return formattedString + "-" + order.getId() + "-" + (int) (Math.random() * 1000);
     }
-
 }
