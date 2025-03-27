@@ -71,7 +71,7 @@ public class CartServiceImpl implements CartService {
             case minus -> {
                 CartItem existingCartItem = getCartItem(cartItems, newCartItem);
                 long oldQuantity = existingCartItem.getQuantity();
-                if (oldQuantity > 0) {
+                if (oldQuantity > 1) {
                     cartItems.remove(existingCartItem);
                     existingCartItem.setQuantity(oldQuantity - 1);
                     cartItems.add(existingCartItem);

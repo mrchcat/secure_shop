@@ -14,6 +14,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             SELECT o
             FROM Order AS o
             WHERE o.user.id=:userId
+            ORDER BY o.created DESC
             """)
     @EntityGraph("graph.order.items")
     List<Order> findAllByUserId(long userId);

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Загрузка товаров</title>
+</head>
+<body>
+<div class="form-container" id="itemDownload">
+    <h2>Страница загрузки товаров в базу данных</h2>
+    <form th:action="@{/admin/items/download}" method="POST" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td><label for="title">Наименование:</label></td>
+                <td><input type="text" id="title" name="title" required="required" style="width:800px;"/></td>
+            </tr>
+            <tr>
+                <td><br/></td>
+            </tr>
+            <tr>
+                <td><label for="description">Подробное описание:</label></td>
+                <td><textarea id="description" name="description" required="required" rows="5" cols="91"
+                              style="width:800px;"></textarea></td>
+            </tr>
+            <tr>
+                <td><br/></td>
+            </tr>
+            <tr>
+                <td>Изображение:</td>
+                <td><input id="image" type="file" name="image" required="required" accept="image/*"/></td>
+            </tr>
+            <tr>
+                <td><br/></td>
+            </tr>
+            <tr>
+                <td><label for="price">Цена:</label></td>
+                <td><input type="number" min="0.01" step="0.01" id="price" name="price" required="required"
+                           style="width:800px;"/></td>
+            </tr>
+            <tr>
+                <td><br/></td>
+            </tr>
+            <tr>
+                <td><label for="unit">Единица измерения:</label></td>
+                <td>
+                    <select class="form-control" id="unit" name="unit" required="required">
+                        <option th:each="unit : ${units}"
+                                th:value="${unit}"
+                                th:text="${unit.getName()}">
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><br/></td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit">Save</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

@@ -2,9 +2,11 @@ package com.github.mrchcat.intershop.item.matcher;
 
 import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
+import com.github.mrchcat.intershop.item.dto.NewItemDto;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ItemMatcher {
 
@@ -48,6 +50,17 @@ public class ItemMatcher {
                 .price(item.getPrice())
                 .imgPath(item.getImgPath())
                 .unit(item.getUnit())
+                .build();
+    }
+
+    public static Item toItem(NewItemDto dto){
+        return Item.builder()
+                .articleNumber(dto.getArticleNumber())
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .imgPath(dto.getImgPath())
+                .price(dto.getPrice())
+                .unit(dto.getUnit())
                 .build();
     }
 

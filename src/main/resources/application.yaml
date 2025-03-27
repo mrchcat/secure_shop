@@ -25,8 +25,8 @@ spring:
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
-    root: INFO
-    org.zalando.logbook: INFO
+    root: DEBUG
+    org.zalando.logbook: DEBUG
 
 application:
   items.perline: 3  #  количество товаров в ряду

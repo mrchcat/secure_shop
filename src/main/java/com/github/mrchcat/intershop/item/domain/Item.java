@@ -14,7 +14,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,7 +39,6 @@ import java.util.UUID;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     private long id;
 
     @Column(name = "article_number")
@@ -53,8 +51,8 @@ public class Item {
     private String title;
 
     @Column(name = "description", nullable = false)
-    @NotNull
-    @NotBlank
+    @NotNull(message = "описание товара не может отсутствовать")
+    @NotBlank(message = "описание товара не может отсутствовать")
     private String description;
 
     @Column(name = "picture_path")
@@ -62,13 +60,13 @@ public class Item {
     private String imgPath;
 
     @Column(name = "price", nullable = false)
-    @NotNull
-    @PositiveOrZero
+    @NotNull (message = "товар должен иметь цену")
+    @PositiveOrZero (message = "цена должна быть положительным числом")
     private BigDecimal price;
 
     @Column(name = "unit", nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull
+    @NotNull(message = "единица измерения не может отсутствовать")
     private Unit unit;
 
     @Override

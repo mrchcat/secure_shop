@@ -3,6 +3,7 @@ package com.github.mrchcat.intershop.item.service;
 import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.MainItemsDto;
+import com.github.mrchcat.intershop.item.dto.NewItemDto;
 import org.springframework.data.domain.Pageable;
 
 public interface ItemService {
@@ -12,5 +13,7 @@ public interface ItemService {
     MainItemsDto getItems(long userId, String search, Pageable pageable);
 
     void changeCart(long userId, long itemId, CartAction action);
+
+    void downloadNewItem(NewItemDto itemDto);
 
 }
