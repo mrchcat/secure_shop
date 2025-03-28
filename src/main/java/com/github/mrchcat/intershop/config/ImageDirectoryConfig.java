@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 @Configuration
 @ConditionalOnProperty(value = "application.items.load.enabled")
-public class WebConfig implements WebMvcConfigurer {
+public class ImageDirectoryConfig implements WebMvcConfigurer {
 
     @Value("${application.items.images.directory}")
     private String IMAGE_DIRECTORY;
