@@ -6,7 +6,6 @@ import com.github.mrchcat.intershop.item.dto.NewItemDto;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class ItemMatcher {
 

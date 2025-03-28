@@ -34,8 +34,9 @@ import java.util.UUID;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CartService cartService;
-    private final Path IMAGE_DIRECTORY_PATH = Path.of("src/main/resources/static");
-    private final Path IMAGE_DIRECTORY_NAME = Path.of("images");
+
+    @Value("${application.items.images.directory}")
+    private String IMAGE_DIRECTORY;
 
     @Value("${application.items.perline:3}")
     private int itemsPerLine;
@@ -91,6 +92,7 @@ public class ItemServiceImpl implements ItemService {
         UUID uuid;
         String imageNameToSave;
         MultipartFile image = itemDto.getImage();
+        Path imageDerictoryPath=Path.of(IMAGE_DIRECTORY);
         if(image==null){
             uuid = UUID.randomUUID();
             imageNameToSave="nophoto.jpg";
@@ -102,12 +104,12 @@ public class ItemServiceImpl implements ItemService {
             do {
                 uuid = UUID.randomUUID();
                 imageNameToSave = uuid + imageExtention;
-                fullImagePath = IMAGE_DIRECTORY_PATH.resolve(IMAGE_DIRECTORY_NAME).resolve(imageNameToSave);
+                fullImagePath = imageDerictoryPath.resolve(imageNameToSave);
             } while (Files.exists(fullImagePath));
             Files.createFile(fullImagePath);
             image.transferTo(fullImagePath);
         }
-        itemDto.setImgPath(IMAGE_DIRECTORY_NAME + "/" + imageNameToSave);
+        itemDto.setImgPath("images/" + imageNameToSave);
         itemDto.setArticleNumber(uuid);
     }
 

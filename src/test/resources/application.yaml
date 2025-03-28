@@ -17,5 +17,8 @@ logging:
     org.zalando.logbook: INFO
 
 application:
-  items.perline: 3  #  количество товаров в ряду
   user_id: 1  #  id текущего пользователя
+  items:
+    perline: 3  #  количество товаров в одном ряду
+    load.enabled: true  #  включена возможность загрузки товаров через административную панель
+    images.directory: c:/temp/imageStorage   #  директория для хранения загруженных картинок

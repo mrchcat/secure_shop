@@ -13,6 +13,12 @@
 3) После запуска контейнеров блог будет доступен по адресу http://localhost:8080.
    В случае конфликта портов внесите исправления в docker-compose.yaml.
 
+Настройки в файлу properties:
+application.user_id - активирует корзину пользователя c заданным id
+application.items.perline - количество товаров, отображаемых в одном ряду
+application.items.load.enabled - включение возможности загрузки картинок
+application.items.load.images.directory: директория для хранения загруженных картинок
+
 Схема базы данных приведена ниже:
 ![](\src\main\resources\schema.png)
 
