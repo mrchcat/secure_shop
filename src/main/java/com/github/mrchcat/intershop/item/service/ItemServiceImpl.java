@@ -8,6 +8,7 @@ import com.github.mrchcat.intershop.item.dto.MainItemsDto;
 import com.github.mrchcat.intershop.item.dto.NewItemDto;
 import com.github.mrchcat.intershop.item.matcher.ItemMatcher;
 import com.github.mrchcat.intershop.item.repository.ItemRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
