@@ -1,26 +1,18 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/intershop
-    username: ${username}
-    password: ${password}
-    driverClassName: org.postgresql.Driver
-  sql:
-    init.mode: always
-  jpa:
-    open-in-view: false
-    hibernate.ddl-auto: validate
-    properties.hibernate:
-      show_sql: false
-      format_sql: true
-      highlight_sql: true
-      jdbc.batch_size: 20
-      order_updates: true
-      cache:
-        use_second_level_cache: true
-        region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
-  transaction:
-    default-timeout: 3
-    rollback-on-commit-failure: true
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/intershop
+    username: postgres
+    password: Inushing1980
+    pool:
+      enabled: true                               # Включение пула соединений
+      initial-size: 10                            # Начальное количество соединений в пуле
+      max-size: 50                                # Максимальное количество соединений
+      max-idle-time: 30s                          # Время бездействия соединения перед закрытием
+      max-life-time: 10m                          # Максимальное время жизни соединения
+      validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
+  thymeleaf:
+      encoding: UTF-8
+#    encoding: WINDOWS-1251
 
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"

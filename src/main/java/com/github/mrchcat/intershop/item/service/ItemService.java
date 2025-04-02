@@ -1,19 +1,16 @@
 package com.github.mrchcat.intershop.item.service;
 
-import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
-import com.github.mrchcat.intershop.item.dto.MainItemsDto;
-import com.github.mrchcat.intershop.item.dto.NewItemDto;
-import org.springframework.data.domain.Pageable;
+import reactor.core.publisher.Mono;
 
 public interface ItemService {
 
-    ItemDto getItem(long userId, long itemId);
+    Mono<ItemDto> getItem(long userId, long itemId);
 
-    MainItemsDto getItems(long userId, String search, Pageable pageable);
-
-    void changeCart(long userId, long itemId, CartAction action);
-
-    void downloadNewItem(NewItemDto itemDto);
+//    Mono<MainItemsDto> getItems(long userId, String search, Pageable pageable);
+//
+//    Mono<Void> changeCart(long userId, long itemId, CartAction action);
+//
+//    Mono<Void> downloadNewItem(NewItemDto itemDto);
 
 }

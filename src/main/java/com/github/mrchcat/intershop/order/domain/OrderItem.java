@@ -1,18 +1,6 @@
 package com.github.mrchcat.intershop.order.domain;
 
 import com.github.mrchcat.intershop.enums.Unit;
-import com.github.mrchcat.intershop.item.domain.Item;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -22,9 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -33,51 +23,33 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Entity
 @Table(name = "order_item")
 public class OrderItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @Column("order_id")
     @NotNull
-    @ToString.Exclude
-    private Order order;
+    private long orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false)
+    @Column("item_id")
     @NotNull
-    @ToString.Exclude
-    private Item item;
+    private long itemId;
 
-    @Column(name = "quantity", nullable = false)
+    @Column("quantity")
     @NotNull
     @Positive
     private long quantity;
 
-    @Column(name = "unit", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Column("unit")
     @NotNull
     private Unit unit;
 
-    @Column(name = "price")
+    @Column("price")
     @PositiveOrZero
     private BigDecimal orderPrice;
 
-    @Column(name = "sum")
+    @Column("sum")
     private BigDecimal sum;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof OrderItem orderItem)) return false;
-        return Objects.equals(order, orderItem.order) && Objects.equals(item, orderItem.item);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(order, item);
-    }
 }

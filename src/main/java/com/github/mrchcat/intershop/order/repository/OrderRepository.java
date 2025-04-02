@@ -1,14 +1,13 @@
 package com.github.mrchcat.intershop.order.repository;
 
+
 import com.github.mrchcat.intershop.order.domain.Order;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends ReactiveCrudRepository<Order, Long> {
 
     @Query("""
             SELECT o
@@ -16,14 +15,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             WHERE o.user.id=:userId
             ORDER BY o.created DESC
             """)
-    @EntityGraph("graph.order.items")
-    List<Order> findAllByUserId(long userId);
+    Flux<Order> findAllByUserId(long userId);
 
     @Query("""
             SELECT o
             FROM Order AS o
             WHERE o.user.id=:userId AND o.id=:orderId
             """)
-    @EntityGraph("graph.order.items")
-    Optional<Order> findByOrderIdByUserId(long userId, long orderId);
+    Mono<Order> findByOrderIdByUserId(long userId, long orderId);
 }
