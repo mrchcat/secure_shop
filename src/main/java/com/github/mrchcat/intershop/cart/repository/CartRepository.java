@@ -9,9 +9,9 @@ import reactor.core.publisher.Mono;
 public interface CartRepository extends ReactiveCrudRepository<Cart, Long> {
 
     @Query("""
-            SELECT c
-            FROM Cart AS c
-            WHERE c.user.id=:userId
+            SELECT id, user_id
+            FROM carts
+            WHERE user_id=:userId
             """)
     Mono<Cart> findByUserId(long userId);
 

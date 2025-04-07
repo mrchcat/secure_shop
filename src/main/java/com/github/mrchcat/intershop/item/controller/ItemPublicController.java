@@ -1,19 +1,30 @@
 package com.github.mrchcat.intershop.item.controller;
 
-import com.github.mrchcat.intershop.item.domain.Item;
+import com.github.mrchcat.intershop.enums.SortOrder;
+import com.github.mrchcat.intershop.item.dto.ActionDto;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
+import com.github.mrchcat.intershop.item.dto.SearchAndPageDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class ItemPublicController {
 
     private final ItemService itemService;
@@ -27,44 +38,46 @@ public class ItemPublicController {
     }
 
     @GetMapping("/items/{id}")
-    public Mono<Rendering> getItem(@ModelAttribute("item") Item idem) {
-        Mono<ItemDto> item = itemService.getItem(userId, idem.getId());
+    public Mono<Rendering> getItem(@PathVariable("id") long itemId) {
+        var itemDto = itemService.getItem(userId, itemId);
         return Mono.just(Rendering
                 .view("item")
-                .modelAttribute("item", item)
-                .modelAttribute("count", item.flatMap(ItemDto::getCount))
-                .modelAttribute("inCart", item.flatMap(ItemDto::getInCart))
+                .modelAttribute("item", itemDto)
                 .build());
     }
-//
-//    @PostMapping("/items/{id}")
-//    public String updateCartInItem(Model model,
-//                                   @ModelAttribute("item") Item item,
-//                                   @RequestParam("action") CartAction action) {
-//        itemService.changeCart(userId, item.getId(), action);
-//        return "redirect:/items/" + item.getId();
-//    }
-//
-//    @GetMapping("/main/items")
-//    public String getAllItems(Model model,
-//                              @RequestParam(name = "search", defaultValue = "") String search,
-//                              @RequestParam(name = "sort", defaultValue = "NO") SortOrder sort,
-//                              @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
-//                              @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
-//
-//        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort.sort);
-//        MainItemsDto dto = itemService.getItems(userId, search, pageable);
-//        model.addAttribute("paging", dto.getPage());
-//        model.addAttribute("items", dto.getItems());
-//        model.addAttribute("sort", sort.toString());
-//        return "main";
-//    }
-//
-//    @PostMapping("main/items/{id}")
-//    public String updateCartInMain(Model model,
-//                                   @PathVariable("id") long itemId,
-//                                   @RequestParam("action") CartAction action) {
-//        itemService.changeCart(userId, itemId, action);
-//        return "redirect:/main/items";
-//    }
+
+
+    @PostMapping("/items/{id}")
+    public Mono<Rendering> updateCartInItem(@PathVariable("id") long itemId,
+                                            @ModelAttribute("actionDto") ActionDto actionDto) {
+        return itemService.changeCart(userId, itemId, actionDto.getAction())
+                .thenReturn(Rendering
+                        .view("redirect:/items/" + itemId)
+                        .build());
+    }
+
+    @GetMapping("/main/items")
+    public Mono<Rendering> getAllItems(@ModelAttribute("searchAndPageDto") SearchAndPageDto searchAndPageDto) {
+        SortOrder sortOrder = searchAndPageDto.getSort();
+        Pageable pageable = PageRequest.of(
+                searchAndPageDto.getPageNumber(),
+                searchAndPageDto.getPageSize(),
+                sortOrder.sort);
+        String search = searchAndPageDto.getSearch();
+
+        Mono<Page<List<ItemDto>>> itemPage = itemService.getItems(userId, pageable, search);
+        return Mono.just(Rendering
+                .view("main")
+                .modelAttribute("sort", sortOrder.toString())
+                .modelAttribute("itemPage", itemPage)
+                .build());
+    }
+
+    @PostMapping("main/items/{id}")
+    public Mono<Rendering> updateCartInMain(@PathVariable("id") long itemId,
+                                            @ModelAttribute("actionDto") ActionDto actionDto) {
+        return itemService
+                .changeCart(userId, itemId, actionDto.getAction())
+                .thenReturn(Rendering.view("redirect:/main/items").build());
+    }
 }

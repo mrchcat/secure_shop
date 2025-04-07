@@ -1,18 +1,33 @@
 package com.github.mrchcat.intershop.item.service;
 
 import com.github.mrchcat.intershop.cart.service.CartService;
+import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
+import com.github.mrchcat.intershop.item.dto.NewItemDto;
 import com.github.mrchcat.intershop.item.matcher.ItemMatcher;
 import com.github.mrchcat.intershop.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @Setter
@@ -36,68 +51,75 @@ public class ItemServiceImpl implements ItemService {
         return ItemMatcher.toDto(item, cartService.getCartItemsForUser(userId));
     }
 
-//    @Override
-//    public Mono<MainItemsDto> getItems(long userId, String search, Pageable pageable) {
-//        Page<Item> itemPage = (search.isBlank())
-//                ? itemRepository.findAll(pageable)
-//                : itemRepository.findAllWithSearch(search, pageable);
-//
-//        List<Item> itemList = itemPage.getContent();
-//        List<ItemDto> itemDtoList = ItemMatcher.toDto(itemList, cartService.getCartItemsForUser(userId));
-//
-//        List<List<ItemDto>> itemDtosToShow = new ArrayList<>();
-//        int fullRows = itemDtoList.size() / itemsPerLine;
-//        for (int i = 0; i < fullRows * itemsPerLine; i = i + itemsPerLine) {
-//            itemDtosToShow.add(itemDtoList.subList(i, i + itemsPerLine));
-//        }
-//        itemDtosToShow.add(itemDtoList.subList(fullRows * itemsPerLine, itemDtoList.size()));
-//        return MainItemsDto.builder()
-//                .items(itemDtosToShow)
-//                .page(itemPage)
-//                .build();
-//    }
-//
-//    @Override
-//    @Transactional
-//    public void changeCart(long userId, long itemId, CartAction action) {
-//        Item item = itemRepository
-//                .findById(itemId)
-//                .orElseThrow(() -> new NoSuchElementException(String.format("товар c id=%s не найден", itemId)));
-//        cartService.changeCart(userId, item, action);
-//    }
-//
-//    @Override
-//    @Transactional
-//    @SneakyThrows
-//    public void downloadNewItem(NewItemDto itemDto) {
-//        setUuidAndImage(itemDto);
-//        Item newItem = ItemMatcher.toItem(itemDto);
-//        itemRepository.save(newItem);
-//    }
-//
-//    private void setUuidAndImage(NewItemDto itemDto) throws IOException {
-//        UUID uuid;
-//        String imageNameToSave;
-//        MultipartFile image = itemDto.getImage();
-//        Path imageDerictoryPath=Path.of(IMAGE_DIRECTORY);
-//        if(image==null){
-//            uuid = UUID.randomUUID();
-//            imageNameToSave="nophoto.jpg";
-//        } else {
-//            String originalImageName = itemDto.getImage().getOriginalFilename();
-//            int pointIndex = originalImageName.lastIndexOf('.');
-//            String imageExtention = (pointIndex != -1) ? originalImageName.substring(pointIndex) : "";
-//            Path fullImagePath;
-//            do {
-//                uuid = UUID.randomUUID();
-//                imageNameToSave = uuid + imageExtention;
-//                fullImagePath = imageDerictoryPath.resolve(imageNameToSave);
-//            } while (Files.exists(fullImagePath));
-//            Files.createFile(fullImagePath);
-//            image.transferTo(fullImagePath);
-//        }
-//        itemDto.setImgPath("images/" + imageNameToSave);
-//        itemDto.setArticleNumber(uuid);
-//    }
+    @Override
+    public Flux<Item> getItemsForOrder(Mono<Long> orderId) {
+        return itemRepository.findAllForOrder(orderId);
+    }
+
+    @Override
+    public Mono<Page<List<ItemDto>>> getItems(long userId, Pageable pageable, String search) {
+        Flux<Item> items = (search.isBlank())
+                ? itemRepository.findAllBy(pageable)
+                : itemRepository.findAllWithSearch(search, pageable);
+
+        Mono<Long> totalItems = itemRepository.count();
+
+        Mono<List<List<ItemDto>>> itemPageContent = ItemMatcher
+                .toDto(items, cartService.getCartItemsForUser(userId))
+                .buffer(itemsPerLine)
+                .collectList();
+        return Mono
+                .zip(itemPageContent, totalItems)
+                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
+    }
+
+    @Override
+    @Transactional
+    public Mono<Void> changeCart(long userId, long itemId, CartAction action) {
+        log.info("Зашли в ItemService: changeCart");
+        Mono<Item> item = itemRepository
+                .findById(itemId)
+                .switchIfEmpty(Mono.error(new NoSuchElementException(String.format("товар c id=%s не найден", itemId))));
+        item.subscribe(System.out::println);
+        return cartService.changeCart(userId, item, action);
+    }
+
+    @Override
+    @Transactional
+    @SneakyThrows
+    public Mono<Void> downloadNewItem(Mono<NewItemDto> itemDto) {
+        return itemDto
+                .flatMap(this::setUuidAndImage)
+                .map(ItemMatcher::toItem)
+                .flatMap(itemRepository::save)
+                .then();
+    }
+
+    private Mono<NewItemDto> setUuidAndImage(NewItemDto itemDto) throws IOException {
+        Mono<Void> toSave = Mono.empty();
+        UUID uuid;
+        String imageNameToSave;
+        FilePart image = itemDto.getImage();
+        Path imageDerictoryPath = Path.of(IMAGE_DIRECTORY);
+        if (image == null) {
+            uuid = UUID.randomUUID();
+            imageNameToSave = "nophoto.jpg";
+        } else {
+            String originalImageName = image.filename();
+            int pointIndex = originalImageName.lastIndexOf('.');
+            String imageExtension = (pointIndex != -1) ? originalImageName.substring(pointIndex) : "";
+            Path fullImagePath;
+            do {
+                uuid = UUID.randomUUID();
+                imageNameToSave = uuid + imageExtension;
+                fullImagePath = imageDerictoryPath.resolve(imageNameToSave);
+            } while (Files.exists(fullImagePath));
+                Files.createFile(fullImagePath);
+                toSave = DataBufferUtils.write(image.content(), fullImagePath);
+        }
+        itemDto.setImgPath("images/" + imageNameToSave);
+        itemDto.setArticleNumber(uuid);
+        return toSave.thenReturn(itemDto);
+    }
 
 }

@@ -7,7 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.ToString;
+import org.springframework.http.codec.multipart.FilePart;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class NewItemDto {
     private UUID articleNumber;
     @NotNull
@@ -26,7 +28,7 @@ public class NewItemDto {
     private String description;
     private String imgPath;
     @NotNull
-    private MultipartFile image;
+    private FilePart image;
     @NotNull
     private BigDecimal price;
     @NotNull

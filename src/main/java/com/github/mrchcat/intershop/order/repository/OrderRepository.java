@@ -10,17 +10,17 @@ import reactor.core.publisher.Mono;
 public interface OrderRepository extends ReactiveCrudRepository<Order, Long> {
 
     @Query("""
-            SELECT o
-            FROM Order AS o
-            WHERE o.user.id=:userId
-            ORDER BY o.created DESC
+            SELECT id,user_id,created,total_sum
+            FROM orders
+            WHERE user_id=:userId
+            ORDER BY created DESC
             """)
     Flux<Order> findAllByUserId(long userId);
 
     @Query("""
-            SELECT o
-            FROM Order AS o
-            WHERE o.user.id=:userId AND o.id=:orderId
+            SELECT id,user_id,created,total_sum
+            FROM orders
+            WHERE id=:orderId AND user_id=:userId
             """)
     Mono<Order> findByOrderIdByUserId(long userId, long orderId);
 }

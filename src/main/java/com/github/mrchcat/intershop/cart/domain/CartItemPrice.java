@@ -1,37 +1,42 @@
 package com.github.mrchcat.intershop.cart.domain;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.github.mrchcat.intershop.enums.Unit;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+
+import java.math.BigDecimal;
+
 
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
-
-@Table(name = "cart_item")
-@Builder
-public class CartItem {
+public class CartItemPrice {
     @Id
     private long id;
 
     @Column("cart_id")
-    @NotNull
     private long cartId;
 
     @Column("item_id")
-    @NotNull
     private long itemId;
+
+    @Column("name")
+    private String title;
+
+    @Column("description")
+    private String description;
+
+    @Column("picture_path")
+    private String imgPath;
+
+    @Column("unit")
+    private Unit unit;
 
     @Column("quantity")
     private long quantity;
 
+    @Column("price")
+    private BigDecimal price;
 }
+
