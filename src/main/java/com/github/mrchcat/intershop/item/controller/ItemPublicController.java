@@ -6,13 +6,11 @@ import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.SearchAndPageDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +22,6 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@Slf4j
 public class ItemPublicController {
 
     private final ItemService itemService;
@@ -33,8 +30,8 @@ public class ItemPublicController {
     private long userId;
 
     @GetMapping("/")
-    public String redirectToAllItems(Model model) {
-        return "redirect:main/items";
+    public Mono<Rendering> redirectToAllItems() {
+        return Mono.just(Rendering.view("redirect:main/items").build());
     }
 
     @GetMapping("/items/{id}")

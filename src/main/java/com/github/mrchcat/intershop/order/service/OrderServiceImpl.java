@@ -24,7 +24,7 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ItemRepository itemRepository;
+    private final ItemRepository itemRepository; //TODO не вызывать репозитории напрямую, только через сервисы
 
     @Override
     @Transactional

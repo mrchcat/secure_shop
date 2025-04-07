@@ -25,7 +25,6 @@ public class OrderController {
     @GetMapping("/orders")
     Mono<Rendering> getOrders() {
         Mono<List<OrderDto>> orderDtos = orderService.getOrders(userId);
-        orderDtos.subscribe(System.out::println);
         return Mono.just(Rendering.view("orders")
                 .modelAttribute("orders", orderDtos)
                 .build());

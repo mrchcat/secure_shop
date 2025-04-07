@@ -5,7 +5,6 @@ import com.github.mrchcat.intershop.item.dto.NewItemDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,6 @@ import reactor.core.publisher.Mono;
 @ConditionalOnProperty(value = "application.items.load.enabled")
 @Controller
 @RequiredArgsConstructor
-@Slf4j
 public class ItemAdminController {
 
     private final ItemService itemService;

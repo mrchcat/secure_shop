@@ -10,7 +10,6 @@ import com.github.mrchcat.intershop.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.data.domain.Page;
@@ -32,7 +31,6 @@ import java.util.UUID;
 @Service
 @Setter
 @RequiredArgsConstructor
-@Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CartService cartService;
@@ -76,7 +74,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Mono<Void> changeCart(long userId, long itemId, CartAction action) {
-        log.info("Зашли в ItemService: changeCart");
         Mono<Item> item = itemRepository
                 .findById(itemId)
                 .switchIfEmpty(Mono.error(new NoSuchElementException(String.format("товар c id=%s не найден", itemId))));

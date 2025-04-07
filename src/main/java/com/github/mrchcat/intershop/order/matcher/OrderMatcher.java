@@ -5,7 +5,6 @@ import com.github.mrchcat.intershop.order.domain.Order;
 import com.github.mrchcat.intershop.order.domain.OrderItem;
 import com.github.mrchcat.intershop.order.dto.OrderDto;
 import com.github.mrchcat.intershop.order.dto.OrderItemDto;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-@Slf4j
 public class OrderMatcher {
 
     public static Mono<OrderDto> toDto(Mono<Order> order, Flux<OrderItem> orderItems, Flux<Item> items) {
