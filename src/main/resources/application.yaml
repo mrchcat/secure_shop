@@ -3,13 +3,13 @@ spring:
     url: r2dbc:postgresql://localhost:5432/intershop
     username: postgres
     password: Inushing1980
-#    pool:
-#      enabled: true                               # Включение пула соединений
-#      initial-size: 10                            # Начальное количество соединений в пуле
-#      max-size: 50                                # Максимальное количество соединений
-#      max-idle-time: 30s                          # Время бездействия соединения перед закрытием
-#      max-life-time: 10m                          # Максимальное время жизни соединения
-#      validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
+    pool:
+      enabled: true                               # Включение пула соединений
+      initial-size: 10                            # Начальное количество соединений в пуле
+      max-size: 50                                # Максимальное количество соединений
+      max-idle-time: 30s                          # Время бездействия соединения перед закрытием
+      max-life-time: 10m                          # Максимальное время жизни соединения
+      validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
   sql:
     init.mode: always
   thymeleaf:
@@ -22,8 +22,8 @@ logging:
     org.zalando.logbook: DEBUG
 
 application:
-  user_id: 1  #  id текущего пользователя
+  user_id: 2  #  id текущего пользователя
   items:
     perline: 3  #  количество товаров в одном ряду
-    load.enabled: true  #  включена возможность загрузки товаров через административную панель
+    load.enabled: false  #  включена возможность загрузки товаров через административную панель
     images.directory: c:/temp/imageStorage   #  директория для хранения загруженных картинок

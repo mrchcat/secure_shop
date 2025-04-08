@@ -1,20 +1,28 @@
 spring:
-  datasource:
-    url: jdbc:tc:postgresql:17.4:///testdb
+  r2dbc:
+    url: r2dbc:tc:postgresql:17.4:///testdb
     username: user
     password: 12345
     driver: org.postgresql.Driver
+    pool:
+      enabled: true                               # Включение пула соединений
+      initial-size: 10                            # Начальное количество соединений в пуле
+      max-size: 50                                # Максимальное количество соединений
+      max-idle-time: 30s                          # Время бездействия соединения перед закрытием
+      max-life-time: 10m                          # Максимальное время жизни соединения
+      validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
   sql:
-    init:
-      mode: always
-      schema-locations: classpath:database/schema.sql
-      data-locations: classpath:database/data.sql
+    init.mode: always
+    schema-locations: classpath:database/schema.sql
+    data-locations: classpath:database/data.sql
+  thymeleaf:
+      encoding: UTF-8
 
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
     root: DEBUG
-    org.zalando.logbook: INFO
+    org.zalando.logbook: DEBUG
 
 application:
   user_id: 1  #  id текущего пользователя

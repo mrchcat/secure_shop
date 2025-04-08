@@ -19,6 +19,8 @@ public interface ItemService {
 
     Mono<Void> changeCart(long userId, long itemId, CartAction action);
 
+    Flux<Item> getItemsForOrders(Flux<Long> orderIds);
+
     Flux<Item> getItemsForOrder(Mono<Long> orderId);
 
     Mono<Void> downloadNewItem(Mono<NewItemDto> itemDto);

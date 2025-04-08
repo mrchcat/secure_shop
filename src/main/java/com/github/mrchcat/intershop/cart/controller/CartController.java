@@ -4,6 +4,7 @@ import com.github.mrchcat.intershop.cart.dto.CartItemsDto;
 import com.github.mrchcat.intershop.cart.service.CartService;
 import com.github.mrchcat.intershop.item.dto.ActionDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
+import com.github.mrchcat.intershop.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Mono;
 public class CartController {
     private final CartService cartService;
     private final ItemService itemService;
+    private final OrderService orderService;
 
     @Value("${application.user_id}")
     private long userId;
@@ -44,7 +46,7 @@ public class CartController {
 
     @PostMapping("/buy")
     public Mono<Rendering> buyCart() {
-        return cartService
+        return orderService
                 .buyCart(userId)
                 .map(order -> Rendering.view("redirect:/orders/" + order.getId() + "?newOrder=true").build());
     }

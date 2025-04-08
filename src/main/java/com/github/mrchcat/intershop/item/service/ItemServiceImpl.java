@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -55,6 +54,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Flux<Item> getItemsForOrders(Flux<Long> orderIds) {
+        return itemRepository.findAllForOrders(orderIds);
+    }
+
+    @Override
     public Mono<Page<List<ItemDto>>> getItems(long userId, Pageable pageable, String search) {
         Flux<Item> items = (search.isBlank())
                 ? itemRepository.findAllBy(pageable)
@@ -83,7 +87,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    @SneakyThrows
     public Mono<Void> downloadNewItem(Mono<NewItemDto> itemDto) {
         return itemDto
                 .flatMap(this::setUuidAndImage)
@@ -92,7 +95,8 @@ public class ItemServiceImpl implements ItemService {
                 .then();
     }
 
-    private Mono<NewItemDto> setUuidAndImage(NewItemDto itemDto) throws IOException {
+    @SneakyThrows
+    private Mono<NewItemDto> setUuidAndImage(NewItemDto itemDto) {
         Mono<Void> toSave = Mono.empty();
         UUID uuid;
         String imageNameToSave;
@@ -118,5 +122,7 @@ public class ItemServiceImpl implements ItemService {
         itemDto.setArticleNumber(uuid);
         return toSave.thenReturn(itemDto);
     }
+
+
 
 }

@@ -10,9 +10,7 @@ import com.github.mrchcat.intershop.cart.repository.CartItemRepository;
 import com.github.mrchcat.intershop.cart.repository.CartRepository;
 import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.domain.Item;
-import com.github.mrchcat.intershop.order.domain.Order;
 import com.github.mrchcat.intershop.order.domain.OrderItem;
-import com.github.mrchcat.intershop.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +28,14 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final CartItemPriceRepository cartItemPriceRepository;
-    private final OrderService orderService;
+
+    @Override
+    public Mono<Cart> getCartForUser(long userId) {
+        return cartRepository
+                .findByUserId(userId)
+                .switchIfEmpty(Mono.error(new NoSuchElementException(
+                        String.format("корзина для пользователя id=%s не найден", userId))));
+    }
 
     @Override
     public Mono<Map<Long, Long>> getCartItemsForUser(long userId) {
@@ -108,16 +113,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
-    public Mono<Order> buyCart(long userId) {
-        Mono<Cart> cart = cartRepository
-                .findByUserId(userId)
-                .switchIfEmpty(Mono.error(new NoSuchElementException(
-                        String.format("корзина для пользователя id=%s не найден", userId))))
-                .cache();
-
-        Mono<Order> order = orderService.makeNewOrder(userId);
-
+    public Flux<OrderItem> getOrderItemsForCart(Mono<Cart> cart) {
         return cartItemPriceRepository
                 .findByCart(cart.map(Cart::getId))
                 .filter(cip -> cip.getQuantity() > 0)
@@ -132,27 +128,12 @@ public class CartServiceImpl implements CartService {
                             .orderPrice(price)
                             .sum(sum)
                             .build();
-                })
-                .collectList()
-                .zipWith(order)
-                .doOnNext(tuple -> {
-                    tuple.getT1().forEach(oi -> oi.setOrderId(tuple.getT2().getId()));
-                    tuple.getT1().forEach(System.out::println);
-                })
-                .doOnNext(tuple -> {
-                            BigDecimal totalSum = tuple.getT1()
-                                    .stream()
-                                    .map(OrderItem::getSum)
-                                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-                            tuple.getT2().setTotalSum(totalSum);
-                        }
-                ).flatMap(tuple -> {
-                    var savedOrderItems = orderService.saveAllOrderItems(tuple.getT1());
-                    var savedOrder = orderService.saveOrder(tuple.getT2());
-                    var clearCart = cart.map(Cart::getId).flatMap(cartItemRepository::clearCart);
-                    return savedOrderItems
-                            .then(clearCart)
-                            .then(savedOrder);
                 });
+    }
+
+    @Override
+    public Mono<Void> clearCart(Mono<Cart> cart) {
+        return cart.map(Cart::getId)
+                .flatMap(cartItemRepository::clearCart);
     }
 }

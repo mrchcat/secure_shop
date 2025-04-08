@@ -19,4 +19,6 @@ public interface OrderService {
 
     Flux<OrderItem> saveAllOrderItems(List<OrderItem> orderItems);
 
+    Mono<Order> buyCart(long userId);
+
 }

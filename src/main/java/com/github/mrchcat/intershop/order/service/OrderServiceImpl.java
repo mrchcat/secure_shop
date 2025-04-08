@@ -1,7 +1,9 @@
 package com.github.mrchcat.intershop.order.service;
 
+import com.github.mrchcat.intershop.cart.domain.Cart;
+import com.github.mrchcat.intershop.cart.service.CartService;
 import com.github.mrchcat.intershop.item.domain.Item;
-import com.github.mrchcat.intershop.item.repository.ItemRepository;
+import com.github.mrchcat.intershop.item.service.ItemService;
 import com.github.mrchcat.intershop.order.domain.Order;
 import com.github.mrchcat.intershop.order.domain.OrderItem;
 import com.github.mrchcat.intershop.order.dto.OrderDto;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +27,8 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ItemRepository itemRepository; //TODO не вызывать репозитории напрямую, только через сервисы
+    private final ItemService itemService;
+    private final CartService cartService;
 
     @Override
     @Transactional
@@ -57,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
         Flux<Order> orders = orderRepository.findAllByUserId(userId);
         orders.subscribe(System.out::println);
         Flux<OrderItem> orderItems = orderItemRepository.findAllByOrders(orders.map(Order::getId));
-        Flux<Item> items = itemRepository.findAllForOrders(orders.map(Order::getId));
+        Flux<Item> items = itemService.getItemsForOrders(orders.map(Order::getId));
         return OrderMatcher.toDto(orders, orderItems, items)
                 .collectList();
     }
@@ -69,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Order not found")))
                 .cache();
         Flux<OrderItem> orderItems = orderItemRepository.findAllByOrder(order.map(Order::getId));
-        Flux<Item> items = itemRepository.findAllForOrder(order.map(Order::getId));
+        Flux<Item> items = itemService.getItemsForOrder(order.map(Order::getId));
 
         return OrderMatcher.toDto(order, orderItems, items);
     }
@@ -77,5 +81,30 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Flux<OrderItem> saveAllOrderItems(List<OrderItem> orderItems) {
         return orderItemRepository.saveAll(orderItems);
+    }
+
+    @Override
+    @Transactional
+    public Mono<Order> buyCart(long userId) {
+        Mono<Cart> cart = cartService.getCartForUser(userId).cache();
+        Mono<Order> order = makeNewOrder(userId);
+        return cartService.getOrderItemsForCart(cart)
+                .collectList()
+                .zipWith(order)
+                .doOnNext(tuple -> {
+                    tuple.getT1().forEach(oi -> oi.setOrderId(tuple.getT2().getId()));
+                    tuple.getT1().forEach(System.out::println);
+                })
+                .doOnNext(tuple -> {
+                            BigDecimal totalSum = tuple.getT1()
+                                    .stream()
+                                    .map(OrderItem::getSum)
+                                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                            tuple.getT2().setTotalSum(totalSum);
+                        }
+                ).flatMap(tuple -> saveAllOrderItems(tuple.getT1())
+                        .then(cartService.clearCart(cart))
+                        .then(saveOrder(tuple.getT2()))
+                );
     }
 }
