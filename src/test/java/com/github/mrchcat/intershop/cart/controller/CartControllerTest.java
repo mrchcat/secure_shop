@@ -1,79 +1,87 @@
 package com.github.mrchcat.intershop.cart.controller;
 
 import com.github.mrchcat.intershop.enums.CartAction;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Transactional
 class CartControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
     @Test
-    void testGetCart() throws Exception {
-        mockMvc.perform(get("/cart/items"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("cart"))
-                .andExpect(model().attributeExists("items"))
-                .andExpect(model().attributeExists("total"))
-                .andExpect(model().attributeExists("empty"));
+    void testGetCart() {
+        webTestClient.get()
+                .uri("/cart/items")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.TEXT_HTML)
+                .expectBody(String.class).consumeWith(response -> {
+                    String body = response.getResponseBody();
+                    Assertions.assertNotNull(body);
+                    Assertions.assertTrue(body.contains("Корзина товаров"));
+                });
     }
 
     @Test
-    void testUpdateCartPlus() throws Exception {
+    void testUpdateCartPlus()  {
         long itemId = 1;
-        mockMvc.perform(post("/cart/items/" + itemId)
-                        .param("action", CartAction.plus.toString()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/cart/items"));
+        webTestClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/cart/items/" + itemId)
+                        .queryParam("action", CartAction.plus.toString())
+                        .build())
+                .exchange()
+                .expectStatus().is3xxRedirection();
+
     }
 
     @Test
-    void testUpdateCartMinus() throws Exception {
+    void testUpdateCartMinus()  {
         long itemId = 1;
-        mockMvc.perform(post("/cart/items/" + itemId)
-                        .param("action", CartAction.plus.toString()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/cart/items"));
-        mockMvc.perform(post("/cart/items/" + itemId)
-                        .param("action", CartAction.minus.toString()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/cart/items"));
+        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
+                        .queryParam("action", CartAction.plus.toString())
+                        .build())
+                .exchange()
+                .expectStatus().is3xxRedirection();
+
+        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
+                        .queryParam("action", CartAction.minus.toString())
+                        .build())
+                .exchange()
+                .expectStatus().is3xxRedirection();
     }
 
     @Test
-    void testUpdateCartDelete() throws Exception {
+    void testUpdateCartDelete() {
         long itemId = 1;
-        mockMvc.perform(post("/cart/items/" + itemId)
-                        .param("action", CartAction.delete.toString()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/cart/items"));
+        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
+                        .queryParam("action", CartAction.delete.toString())
+                        .build())
+                .exchange()
+                .expectStatus().is3xxRedirection();
     }
 
     @Test
-    void testBuy() throws Exception {
+    void testBuy()  {
         long itemId = 1;
-        mockMvc.perform(post("/cart/items/" + itemId)
-                        .param("action", CartAction.plus.toString()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/cart/items"));
-        mockMvc.perform(post("/buy"))
-                .andExpect(status().is3xxRedirection());
+        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
+                        .queryParam("action", CartAction.plus.toString())
+                        .build())
+                .exchange()
+                .expectStatus().is3xxRedirection();
+
+        webTestClient.post().uri("/buy")
+                .exchange()
+                .expectStatus().is3xxRedirection();
     }
 
 

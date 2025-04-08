@@ -1,9 +1,8 @@
 spring:
   r2dbc:
-    url: r2dbc:tc:postgresql:17.4:///testdb
+    url: r2dbc:tc:postgresql:///testdb?TC_IMAGE_TAG=17.4
     username: user
     password: 12345
-    driver: org.postgresql.Driver
     pool:
       enabled: true                               # Включение пула соединений
       initial-size: 10                            # Начальное количество соединений в пуле
@@ -12,11 +11,12 @@ spring:
       max-life-time: 10m                          # Максимальное время жизни соединения
       validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
   sql:
-    init.mode: always
-    schema-locations: classpath:database/schema.sql
-    data-locations: classpath:database/data.sql
+    init:
+      mode: always
+      schema-locations: classpath:database/schema.sql
+      data-locations: classpath:database/data.sql
   thymeleaf:
-      encoding: UTF-8
+    encoding: UTF-8
 
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
@@ -28,5 +28,5 @@ application:
   user_id: 1  #  id текущего пользователя
   items:
     perline: 3  #  количество товаров в одном ряду
-    load.enabled: true  #  включена возможность загрузки товаров через административную панель
+    load.enabled: false  #  включена возможность загрузки товаров через административную панель
     images.directory: c:/temp/imageStorage   #  директория для хранения загруженных картинок

@@ -18,13 +18,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@ToString
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@Builder
 
 @Table(name = "orders")
-
 public class Order {
     @Id
     private long id;
@@ -37,7 +36,7 @@ public class Order {
     private long userId;
 
     @Column("created")
-    private LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
 
     @Column("total_sum")
     @PositiveOrZero(message = "сумма заказа не может быть отрицательным числом")

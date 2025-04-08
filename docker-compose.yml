@@ -26,10 +26,9 @@ services:
       intershop-database:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://intershop-database:5432/intershopdb
-      - SPRING_DATASOURCE_USERNAME=user
-      - SPRING_DATASOURCE_PASSWORD=12345
-      - SPRING_DATASOURCE_DRIVER=org.postgresql.Driver
+      - SPRING_R2DBC_URL=r2dbc:postgresql://intershop-database:5432/intershopdb
+      - SPRING_R2DBC_USERNAME=user
+      - SPRING_R2DBC_PASSWORD=12345
     networks:
       - backend
 

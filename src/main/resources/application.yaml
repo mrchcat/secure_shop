@@ -1,8 +1,8 @@
 spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/intershop
-    username: postgres
-    password: Inushing1980
+    username: ${username}
+    password: ${password}
     pool:
       enabled: true                               # Включение пула соединений
       initial-size: 10                            # Начальное количество соединений в пуле

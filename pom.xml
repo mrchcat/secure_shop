@@ -73,13 +73,16 @@
             <artifactId>r2dbc</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.zalando</groupId>
             <artifactId>logbook-spring-boot-starter</artifactId>
             <version>3.7.2</version>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>
