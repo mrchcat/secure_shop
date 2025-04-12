@@ -18,8 +18,8 @@ spring:
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
-    root: DEBUG
-    org.zalando.logbook: DEBUG
+    root: INFO
+    org.zalando.logbook: INFO
 
 application:
   user_id: 2  #  id текущего пользователя
