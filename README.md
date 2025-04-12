@@ -25,5 +25,5 @@
 application.items.load.enabled установлен в true и задан каталог для хранения статических изображений.
 
 Схема базы данных приведена ниже:
-![](\src\main\resources\schema.png)
+![](https://github.com/mrchcat/intershop_reactive/blob/main/src/main/resources/schema.png)
 
