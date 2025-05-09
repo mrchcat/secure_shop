@@ -1,8 +1,10 @@
 spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/intershop
-    username: ${username}
-    password: ${password}
+#    username: ${username}
+#    password: ${password}
+    username: postgres
+    password: Inushing1980
     pool:
       enabled: true                               # Включение пула соединений
       initial-size: 10                            # Начальное количество соединений в пуле
@@ -25,5 +27,5 @@ application:
   user_id: 2  #  id текущего пользователя
   items:
     perline: 3  #  количество товаров в одном ряду
-    load.enabled: false  #  включена возможность загрузки товаров через административную панель
+    load.enabled: true  #  включена возможность загрузки товаров через административную панель
     images.directory: c:/temp/imageStorage   #  директория для хранения загруженных картинок

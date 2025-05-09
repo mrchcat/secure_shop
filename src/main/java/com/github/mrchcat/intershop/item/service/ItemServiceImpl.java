@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.ls.LSOutput;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -26,6 +27,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.jar.JarOutputStream;
 
 @Service
 @Setter
@@ -98,31 +101,35 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     private Mono<NewItemDto> setUuidAndImage(NewItemDto itemDto) {
         Mono<Void> toSave = Mono.empty();
-        UUID uuid;
+        UUID uuid = getNewUUID();
         String imageNameToSave;
         FilePart image = itemDto.getImage();
         Path imageDerictoryPath = Path.of(IMAGE_DIRECTORY);
         if (image == null) {
-            uuid = UUID.randomUUID();
             imageNameToSave = "nophoto.jpg";
         } else {
             String originalImageName = image.filename();
             int pointIndex = originalImageName.lastIndexOf('.');
             String imageExtension = (pointIndex != -1) ? originalImageName.substring(pointIndex) : "";
             Path fullImagePath;
-            do {
-                uuid = UUID.randomUUID();
-                imageNameToSave = uuid + imageExtension;
-                fullImagePath = imageDerictoryPath.resolve(imageNameToSave);
-            } while (Files.exists(fullImagePath));
-                Files.createFile(fullImagePath);
-                toSave = DataBufferUtils.write(image.content(), fullImagePath);
+            imageNameToSave = uuid + imageExtension;
+            fullImagePath = imageDerictoryPath.resolve(imageNameToSave);
+            Files.createFile(fullImagePath);
+            toSave = DataBufferUtils.write(image.content(), fullImagePath);
         }
         itemDto.setImgPath("images/" + imageNameToSave);
         itemDto.setArticleNumber(uuid);
         return toSave.thenReturn(itemDto);
     }
 
-
-
+    @SneakyThrows
+    private UUID getNewUUID() {
+        UUID uuid;
+        Boolean hasUuid;
+        do {
+            uuid = UUID.randomUUID();
+            hasUuid = itemRepository.hasUuid(uuid).toFuture().get();
+        } while (Boolean.TRUE.equals(hasUuid));
+        return uuid;
+    }
 }

@@ -30,7 +30,6 @@ public class ItemAdminController {
 
     @PostMapping(value = "admin/items/download", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<Rendering> downloadItem(@ModelAttribute("newItemDto") @Valid Mono<NewItemDto> newItemDto) {
-        newItemDto.subscribe(System.out::println);
         return itemService.downloadNewItem(newItemDto)
                 .thenReturn(Rendering.view("redirect:/admin/items/download").build());
     }

@@ -9,6 +9,8 @@ import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 
 public interface ItemRepository extends ReactiveSortingRepository<Item, Long>, ReactiveCrudRepository<Item, Long> {
 
@@ -38,5 +40,12 @@ public interface ItemRepository extends ReactiveSortingRepository<Item, Long>, R
             WHERE oi.order_id IN(:orderIds)
             """)
     Flux<Item> findAllForOrders(Flux<Long> orderIds);
+
+    @Query("""
+            SELECT CASE WHEN COUNT(i)>0 THEN TRUE ELSE FALSE END
+            FROM items AS i
+            WHERE i.article_number=:uuid
+            """)
+    Mono<Boolean> hasUuid(UUID uuid);
 
 }
