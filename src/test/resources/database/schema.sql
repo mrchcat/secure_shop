@@ -51,3 +51,5 @@ CREATE TABLE IF NOT EXISTS cart_item (
   item_id BIGINT REFERENCES items(id) NOT NULL,
   quantity BIGINT NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS IDX_ITEMS_UUID ON items(article_number);
