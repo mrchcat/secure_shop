@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Configuration
-@Import(PaymentConfig.class)
 @ConditionalOnProperty(value = "application.items.load.enabled")
 public class ImageDirectoryConfig implements WebFluxConfigurer {
 

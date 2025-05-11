@@ -8,6 +8,7 @@ public class PaymentConfig {
 
     @Bean
     PaymentClient getPaymentClient(){
+        System.out.println("getPaymentClient");
         return new PaymentClientImpl();
     }
 }

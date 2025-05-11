@@ -30,7 +30,9 @@
                         <b th:text="${item.getPrice()}+' руб.'"></b>
                     </td>
                 </tr>
-                <tr><td th:text="${item.getDescription()}"></td></tr>
+                <tr>
+                    <td th:text="${item.getDescription()}"></td>
+                </tr>
                 <tr>
                     <td>
                         <form th:action="${'/cart/items/'+item.getId()}" method="post">
@@ -51,11 +53,16 @@
     </tr>
     <tr>
         <td style="text-align:right">
-            <form action="/buy" method="post" th:if="${!empty}">
+            <form action="/buy" method="post" th:if="${enablePayment}">
                 <button>Купить</button>
             </form>
         </td>
     </tr>
+    <td>
+        <div style="text-align: right;">
+            <span th:if="${!enablePayment}" th:text=${payServiceError.getMessage()} style="color:red"></span>
+        </div>
+    </td>
 </table>
 </body>
 

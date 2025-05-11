@@ -1,5 +1,5 @@
-INSERT INTO users (email,name)
-VALUES ('anna@mail.ru','Anna'),('boris@mail.ru','Boris');
+INSERT INTO users (email,name,payment_id)
+VALUES ('anna@mail.ru','Anna','db1673e9-bf97-4dfa-acdb-88a280d4d144'),('boris@mail.ru','Boris','73c474e3-264f-4d8d-8f5d-4f566eb341a0');
 
 INSERT INTO carts (user_id)
 VALUES (1),(2);

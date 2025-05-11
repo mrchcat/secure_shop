@@ -33,6 +33,8 @@ public class CartController {
                 .modelAttribute("items", cartItemsDto.map(CartItemsDto::getItemDtoList))
                 .modelAttribute("total", cartItemsDto.map(CartItemsDto::getTotal))
                 .modelAttribute("empty", cartItemsDto.map(CartItemsDto::isCartEmpty))
+                .modelAttribute("enablePayment", cartItemsDto.map(CartItemsDto::isEnablePayment))
+                .modelAttribute("payServiceError",cartItemsDto.map(CartItemsDto::getPayError))
                 .build());
     }
 

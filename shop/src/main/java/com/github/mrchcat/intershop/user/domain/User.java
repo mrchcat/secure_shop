@@ -15,6 +15,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @ToString
@@ -38,4 +40,8 @@ public class User {
     @NotBlank
     @Length(max = 256)
     private String name;
+
+    @Column("payment_id")
+    @NotNull
+    private UUID paymentId;
 }

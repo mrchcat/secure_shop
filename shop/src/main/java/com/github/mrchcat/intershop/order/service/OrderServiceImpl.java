@@ -1,5 +1,6 @@
 package com.github.mrchcat.intershop.order.service;
 
+import client.PaymentClient;
 import com.github.mrchcat.intershop.cart.domain.Cart;
 import com.github.mrchcat.intershop.cart.service.CartService;
 import com.github.mrchcat.intershop.item.domain.Item;
@@ -10,6 +11,9 @@ import com.github.mrchcat.intershop.order.dto.OrderDto;
 import com.github.mrchcat.intershop.order.matcher.OrderMatcher;
 import com.github.mrchcat.intershop.order.repository.OrderItemRepository;
 import com.github.mrchcat.intershop.order.repository.OrderRepository;
+import com.github.mrchcat.intershop.user.domain.User;
+import com.github.mrchcat.intershop.user.service.UserService;
+import dto.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +34,9 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ItemService itemService;
     private final CartService cartService;
+    private final UserService userService;
+    private final PaymentClient paymentClient;
+    private final UUID shopPaymentId = UUID.fromString("623ff0e5-2069-4051-88dc-fea52a85ffab");
 
     @Override
     @Transactional
@@ -88,6 +96,8 @@ public class OrderServiceImpl implements OrderService {
     public Mono<Order> buyCart(long userId) {
         Mono<Cart> cart = cartService.getCartForUser(userId).cache();
         Mono<Order> order = makeNewOrder(userId);
+        Mono<UUID> userPaymentId = userService.getUser(userId).map(User::getPaymentId);
+
         return cartService.getOrderItemsForCart(cart)
                 .collectList()
                 .zipWith(order)
@@ -102,9 +112,20 @@ public class OrderServiceImpl implements OrderService {
                                     .reduce(BigDecimal.ZERO, BigDecimal::add);
                             tuple.getT2().setTotalSum(totalSum);
                         }
-                ).flatMap(tuple -> saveAllOrderItems(tuple.getT1())
-                        .then(cartService.clearCart(cart))
-                        .then(saveOrder(tuple.getT2()))
+                )
+                .flatMap(tuple -> {
+                            Mono<Payment> payment = userPaymentId
+                                    .map(payerId -> Payment.builder()
+                                            .paymentId(UUID.randomUUID())
+                                            .payer(payerId)
+                                            .recipient(shopPaymentId)
+                                            .amount(tuple.getT2().getTotalSum())
+                                            .build())
+                                    .flatMap(paymentClient::createPayment);
+                            return payment.thenMany(saveAllOrderItems(tuple.getT1()))
+                                    .then(cartService.clearCart(cart))
+                                    .then(saveOrder(tuple.getT2()));
+                        }
                 );
     }
 }

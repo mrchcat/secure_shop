@@ -18,7 +18,6 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-
     @Value("${application.user_id}")
     private long userId;
 

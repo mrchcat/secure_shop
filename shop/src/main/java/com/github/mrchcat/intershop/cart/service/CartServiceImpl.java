@@ -1,5 +1,6 @@
 package com.github.mrchcat.intershop.cart.service;
 
+import client.PaymentClient;
 import com.github.mrchcat.intershop.cart.domain.Cart;
 import com.github.mrchcat.intershop.cart.domain.CartItem;
 import com.github.mrchcat.intershop.cart.domain.CartItemPrice;
@@ -9,9 +10,13 @@ import com.github.mrchcat.intershop.cart.repository.CartItemPriceRepository;
 import com.github.mrchcat.intershop.cart.repository.CartItemRepository;
 import com.github.mrchcat.intershop.cart.repository.CartRepository;
 import com.github.mrchcat.intershop.enums.CartAction;
+import com.github.mrchcat.intershop.enums.PayServiceError;
 import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.order.domain.OrderItem;
+import com.github.mrchcat.intershop.user.service.UserService;
+import dto.Balance;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -19,6 +24,7 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -28,6 +34,8 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final CartItemPriceRepository cartItemPriceRepository;
+    private final UserService userService;
+    private final PaymentClient paymentClient;
 
     @Override
     public Mono<Cart> getCartForUser(long userId) {
@@ -89,25 +97,44 @@ public class CartServiceImpl implements CartService {
                 .switchIfEmpty(Mono.error(new NoSuchElementException(
                         String.format("корзина для пользователя id=%s не найден", userId))));
         Flux<CartItemPrice> cartItemPrices = cartItemPriceRepository.findByCart(cart.map(Cart::getId));
+        Mono<Balance> balance = userService.getUser(userId)
+                .flatMap(user -> paymentClient.getBalance(user.getPaymentId()))
+                .onErrorReturn(new Balance(null,null,BigDecimal.ZERO,""));
 
         return cartItemPrices
                 .collectList()
-                .map(list -> {
+                .zipWith(balance)
+                .map(tuple -> {
+                    List<CartItemPrice> list = tuple.getT1();
                     if (list.isEmpty()) {
                         return CartItemsDto.builder()
                                 .itemDtoList(Collections.emptyList())
                                 .isCartEmpty(true)
                                 .total(BigDecimal.ZERO)
+                                .enablePayment(false)
+                                .payError(PayServiceError.NO)
                                 .build();
                     }
-                    BigDecimal total = list.stream()
+                    BigDecimal totalAmount = list.stream()
                             .map(cip -> cip.getPrice().multiply(BigDecimal.valueOf(cip.getQuantity())))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+                    if(tuple.getT2().getClient()==null&&tuple.getT2().getAccount()==null){
+                        return CartItemsDto.builder()
+                                .itemDtoList(CartItemPriceMatcher.toDto(list))
+                                .isCartEmpty(false)
+                                .total(totalAmount)
+                                .enablePayment(false)
+                                .payError(PayServiceError.OUT_OF_ORDER)
+                                .build();
+                    }
+                    BigDecimal userBalance = tuple.getT2().getAmount();
+                    boolean isEnoughMoney = userBalance.compareTo(totalAmount) >= 0;
                     return CartItemsDto.builder()
                             .itemDtoList(CartItemPriceMatcher.toDto(list))
                             .isCartEmpty(false)
-                            .total(total)
+                            .total(totalAmount)
+                            .enablePayment(isEnoughMoney)
+                            .payError(isEnoughMoney?PayServiceError.NO:PayServiceError.NOT_ENOUGH_MONEY)
                             .build();
                 });
     }

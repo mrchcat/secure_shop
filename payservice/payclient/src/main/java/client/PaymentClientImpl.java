@@ -15,6 +15,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Component
 public class PaymentClientImpl implements PaymentClient {
+    //TODO изменить через application.yaml
     private final WebClient webClient = WebClient.create("http://127.0.0.1:8081");
 
     @Override
