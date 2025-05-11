@@ -1,10 +1,8 @@
 package client;
 
-
 import dto.Balance;
 import dto.ErrorResponse;
 import dto.Payment;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,11 +10,13 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Component
 public class PaymentClientImpl implements PaymentClient {
-    //TODO изменить через application.yaml
-    private final WebClient webClient = WebClient.create("http://127.0.0.1:8081");
+    private final WebClient webClient;
+
+    public PaymentClientImpl(String serverUrl) {
+        this.webClient = WebClient.create(serverUrl);
+    }
 
     @Override
     public Mono<Payment> createPayment(Payment payment) {

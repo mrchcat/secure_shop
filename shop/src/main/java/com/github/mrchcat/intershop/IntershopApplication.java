@@ -1,7 +1,5 @@
 package com.github.mrchcat.intershop;
 
-import client.PaymentClient;
-import dto.Balance;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

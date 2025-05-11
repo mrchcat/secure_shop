@@ -1,7 +1,7 @@
 package dto;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +21,7 @@ public class Payment {
     private UUID payer;
     @NotNull
     private UUID recipient;
-    @Positive
     @NotNull
+    @PositiveOrZero
     private BigDecimal amount;
 }

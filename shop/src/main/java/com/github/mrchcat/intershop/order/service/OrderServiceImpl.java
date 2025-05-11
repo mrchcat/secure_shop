@@ -15,6 +15,7 @@ import com.github.mrchcat.intershop.user.domain.User;
 import com.github.mrchcat.intershop.user.service.UserService;
 import dto.Payment;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -36,7 +37,8 @@ public class OrderServiceImpl implements OrderService {
     private final CartService cartService;
     private final UserService userService;
     private final PaymentClient paymentClient;
-    private final UUID shopPaymentId = UUID.fromString("623ff0e5-2069-4051-88dc-fea52a85ffab");
+    @Value("${application.shop.payment_id}")
+    private UUID shopPaymentId;
 
     @Override
     @Transactional

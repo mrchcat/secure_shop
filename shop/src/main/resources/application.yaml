@@ -25,7 +25,12 @@ logging:
 
 application:
   user_id: 2  #  id текущего пользователя
+  shop:
+    payment_id: "623ff0e5-2069-4051-88dc-fea52a85ffab"
   items:
     perline: 3  #  количество товаров в одном ряду
     load.enabled: false  #  включена возможность загрузки товаров через административную панель
     images.directory: c:/temp/imageStorage   #  директория для хранения загруженных картинок
+payment:
+  server:
+    url: "http://127.0.0.1:8081"   #  адрес сервиса оплаты

@@ -21,16 +21,16 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public Mono<Payment> createPayment(Payment p) {
-        return payRep.hasClients(p).flatMap(hasClients -> {
+    public Mono<Payment> createPayment(Payment payment) {
+        return payRep.hasClients(payment).flatMap(hasClients -> {
             if (!hasClients) {
-                return Mono.error(new ClientNotFoundException(p.getPayer()+";"+p.getRecipient()));
+                return Mono.error(new ClientNotFoundException(payment.getPayer()+";"+payment.getRecipient()));
             }
-            return payRep.getBalance(p.getPayer()).flatMap(balance -> {
-                if (balance.getAmount().compareTo(p.getAmount()) < 0) {
-                    return Mono.error(new BalanceNotEnough(p.getPaymentId().toString()));
+            return payRep.getBalance(payment.getPayer()).flatMap(balance -> {
+                if (balance.getAmount().compareTo(payment.getAmount()) < 0) {
+                    return Mono.error(new BalanceNotEnough(payment.getPaymentId().toString()));
                 }
-                return payRep.transfer(p);
+                return payRep.transfer(payment);
             });
         });
     }

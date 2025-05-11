@@ -1,14 +1,17 @@
 package client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PaymentConfig {
 
+    @Value("${payment.server.url}")
+    private String serverUrl;
+
     @Bean
-    PaymentClient getPaymentClient(){
-        System.out.println("getPaymentClient");
-        return new PaymentClientImpl();
+    PaymentClient getPaymentClient() {
+        return new PaymentClientImpl(serverUrl);
     }
 }
