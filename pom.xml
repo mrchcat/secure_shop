@@ -18,7 +18,7 @@
         <module>shop</module>
         <module>payservice</module>
         <module>payservice/server</module>
-        <module>payservice/client</module>
+        <module>payservice/payclient</module>
         <module>payservice/dto</module>
     </modules>
 
