@@ -12,16 +12,24 @@ spring:
       max-idle-time: 30s                          # Время бездействия соединения перед закрытием
       max-life-time: 10m                          # Максимальное время жизни соединения
       validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: 12345
+      lettuce:
+        pool:
+          max-idle: 2
   sql:
     init.mode: always
   thymeleaf:
-      encoding: UTF-8
+        encoding: UTF-8
 
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
-    root: INFO
-    org.zalando.logbook: INFO
+    root: DEBUG
+    org.zalando.logbook: DEBUG
 
 application:
   user_id: 2  #  id текущего пользователя

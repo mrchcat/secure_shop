@@ -5,14 +5,15 @@ import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.NewItemDto;
+import com.github.mrchcat.intershop.item.dto.PageWrapper;
 import com.github.mrchcat.intershop.item.matcher.ItemMatcher;
 import com.github.mrchcat.intershop.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.codec.multipart.FilePart;
@@ -41,6 +42,7 @@ public class ItemServiceImpl implements ItemService {
     private int itemsPerLine;
 
     @Override
+    @Cacheable(value = "itemDto", key = "#itemId")
     public Mono<ItemDto> getItem(long userId, long itemId) {
         Mono<Item> item = itemRepository
                 .findById(itemId)
@@ -59,7 +61,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Mono<Page<List<ItemDto>>> getItems(long userId, Pageable pageable, String search) {
+    @Cacheable(value = "itemDtoPage", key = "{#pageable,#search}")
+    public Mono<PageWrapper> getItems(long userId, Pageable pageable, String search) {
         Flux<Item> items = (search.isBlank())
                 ? itemRepository.findAllBy(pageable)
                 : itemRepository.findAllWithSearch(search, pageable);
@@ -72,7 +75,8 @@ public class ItemServiceImpl implements ItemService {
                 .collectList();
         return Mono
                 .zip(itemPageContent, totalItems)
-                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
+                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()))
+                .map(PageWrapper::new);
     }
 
     @Override

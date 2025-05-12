@@ -4,18 +4,16 @@ import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.NewItemDto;
-import org.springframework.data.domain.Page;
+import com.github.mrchcat.intershop.item.dto.PageWrapper;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 public interface ItemService {
 
     Mono<ItemDto> getItem(long userId, long itemId);
 
-    Mono<Page<List<ItemDto>>> getItems(long userId, Pageable pageable, String search);
+    Mono<PageWrapper> getItems(long userId, Pageable pageable, String search);
 
     Mono<Void> changeCart(long userId, long itemId, CartAction action);
 

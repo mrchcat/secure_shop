@@ -50,6 +50,22 @@ services:
     networks:
       - backend
 
+  intershop-cache:
+    image: redis:8.0.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "12345", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    networks:
+      - backend
+
   intershop-service:
     build: shop/
     image: intershop
@@ -59,12 +75,16 @@ services:
     depends_on:
       intershop-database:
         condition: service_healthy
+      intershop-cache:
+        condition: service_healthy
       payment-service:
         condition: service_started
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://intershop-database:5432/intershopdb
       - SPRING_R2DBC_USERNAME=user
       - SPRING_R2DBC_PASSWORD=12345
+      - SPRING_REDIS_HOST=intershop-cache
+      - SPRING_REDIS_PORT=6379
       - PAYMENT_SERVER_URL=http://payment-service:8081
     networks:
       - backend

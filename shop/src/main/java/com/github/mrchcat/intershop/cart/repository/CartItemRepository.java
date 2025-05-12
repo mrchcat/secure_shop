@@ -3,9 +3,11 @@ package com.github.mrchcat.intershop.cart.repository;
 import com.github.mrchcat.intershop.cart.domain.CartItem;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Repository
 public interface CartItemRepository extends ReactiveCrudRepository<CartItem, Long> {
 
     @Query("""

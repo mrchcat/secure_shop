@@ -3,6 +3,7 @@ package com.github.mrchcat.intershop.item.controller;
 import com.github.mrchcat.intershop.enums.SortOrder;
 import com.github.mrchcat.intershop.item.dto.ActionDto;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
+import com.github.mrchcat.intershop.item.dto.PageWrapper;
 import com.github.mrchcat.intershop.item.dto.SearchAndPageDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,10 @@ public class ItemPublicController {
                 sortOrder.sort);
         String search = searchAndPageDto.getSearch();
 
-        Mono<Page<List<ItemDto>>> itemPage = itemService.getItems(userId, pageable, search);
+        Mono<PageWrapper> itemPage = itemService.getItems(userId, pageable, search);
+        itemPage.subscribe(pw -> System.out.println("Распечатка" + pw.getContent()));
+        itemPage = itemService.getItems(userId, pageable, search);
+
         return Mono.just(Rendering
                 .view("main")
                 .modelAttribute("sort", sortOrder.toString())

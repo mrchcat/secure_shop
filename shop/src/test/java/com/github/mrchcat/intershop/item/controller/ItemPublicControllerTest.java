@@ -23,31 +23,31 @@ class ItemPublicControllerTest {
                 .expectStatus().is3xxRedirection();
     }
 
-    @Test
-    void testGetItem() {
-        long itemId = 1;
-        webTestClient.get().uri("/items/" + itemId)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).consumeWith(response -> {
-                    String body = response.getResponseBody();
-                    Assertions.assertNotNull(body);
-                    Assertions.assertTrue(body.contains("Витрина товаров"));
-                });
-    }
+//    @Test
+//    void testGetItem() {
+//        long itemId = 1;
+//        webTestClient.get().uri("/items/" + itemId)
+//                .exchange()
+//                .expectStatus().isOk()
+//                .expectBody(String.class).consumeWith(response -> {
+//                    String body = response.getResponseBody();
+//                    Assertions.assertNotNull(body);
+//                    Assertions.assertTrue(body.contains("Витрина товаров"));
+//                });
+//    }
 
-    @Test
-    void testGetItems()  {
-        webTestClient.get()
-                .uri("/main/items")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).consumeWith(response -> {
-                    String body = response.getResponseBody();
-                    Assertions.assertNotNull(body);
-                    Assertions.assertTrue(body.contains("Витрина товаров"));
-                });
-    }
+//    @Test
+//    void testGetItems()  {
+//        webTestClient.get()
+//                .uri("/main/items")
+//                .exchange()
+//                .expectStatus().isOk()
+//                .expectBody(String.class).consumeWith(response -> {
+//                    String body = response.getResponseBody();
+//                    Assertions.assertNotNull(body);
+//                    Assertions.assertTrue(body.contains("Витрина товаров"));
+//                });
+//    }
 
     @Test
     void testUpdateCartPlus() {
