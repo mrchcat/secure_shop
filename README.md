@@ -28,7 +28,7 @@
 application.items.load.enabled установлен в true и задан каталог для хранения статических изображений.
 
 Схема базы данных основного приложения:
-![](https://github.com/mrchcat/intershop_reactive/blob/main/src/main/resources/schema.png)
+![](https://github.com/mrchcat/intershop_reactive_withRedisCache/blob/main/shop/src/main/resources/schema.png)
 
 Платежный сервис реализует следующий API:
 [спецификация OpenApi](https://github.com/mrchcat/intershop_reactive_withRedisCache/blob/main/payservice/PayServiceOpenApi.yaml)
