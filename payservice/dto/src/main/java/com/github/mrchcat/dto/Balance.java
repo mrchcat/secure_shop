@@ -1,4 +1,4 @@
-package dto;
+package com.github.mrchcat.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

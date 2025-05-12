@@ -1,8 +1,8 @@
-package client;
+package com.github.mrchcat.client;
 
-import dto.Balance;
-import dto.ErrorResponse;
-import dto.Payment;
+import com.github.mrchcat.dto.Balance;
+import com.github.mrchcat.dto.ErrorResponse;
+import com.github.mrchcat.dto.Payment;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;

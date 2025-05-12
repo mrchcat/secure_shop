@@ -1,4 +1,4 @@
-package server.exception;
+package com.github.mrchcat.server.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

@@ -1,4 +1,4 @@
-package dto;
+package com.github.mrchcat.dto;
 
 import lombok.ToString;
 

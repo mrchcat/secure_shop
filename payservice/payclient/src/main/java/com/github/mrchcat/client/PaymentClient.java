@@ -1,8 +1,8 @@
-package client;
+package com.github.mrchcat.client;
 
 
-import dto.Balance;
-import dto.Payment;
+import com.github.mrchcat.dto.Balance;
+import com.github.mrchcat.dto.Payment;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;

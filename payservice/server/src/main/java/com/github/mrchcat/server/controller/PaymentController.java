@@ -1,7 +1,7 @@
-package server.controller;
+package com.github.mrchcat.server.controller;
 
-import dto.Balance;
-import dto.Payment;
+import com.github.mrchcat.dto.Balance;
+import com.github.mrchcat.dto.Payment;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-import server.service.PaymentService;
+import com.github.mrchcat.server.service.PaymentService;
 
 import java.util.UUID;
 

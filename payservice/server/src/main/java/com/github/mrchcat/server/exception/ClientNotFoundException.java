@@ -1,4 +1,4 @@
-package server.exception;
+package com.github.mrchcat.server.exception;
 
 public class ClientNotFoundException extends RuntimeException {
     public ClientNotFoundException(String message) {

@@ -1,4 +1,4 @@
-package server.exception;
+package com.github.mrchcat.server.exception;
 
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.DataIntegrityViolationException;

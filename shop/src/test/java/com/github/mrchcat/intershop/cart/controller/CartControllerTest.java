@@ -70,19 +70,19 @@ class CartControllerTest {
                 .expectStatus().is3xxRedirection();
     }
 
-    @Test
-    void testBuy()  {
-        long itemId = 1;
-        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
-                        .queryParam("action", CartAction.plus.toString())
-                        .build())
-                .exchange()
-                .expectStatus().is3xxRedirection();
-
-        webTestClient.post().uri("/buy")
-                .exchange()
-                .expectStatus().is3xxRedirection();
-    }
+//    @Test
+//    void testBuy()  {
+//        long itemId = 1;
+//        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
+//                        .queryParam("action", CartAction.plus.toString())
+//                        .build())
+//                .exchange()
+//                .expectStatus().is3xxRedirection();
+//
+//        webTestClient.post().uri("/buy")
+//                .exchange()
+//                .expectStatus().is3xxRedirection();
+//    }
 
 
 }

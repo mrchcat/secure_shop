@@ -1,7 +1,41 @@
 services:
+
+  payment-database:
+    image: postgres:17.4
+    container_name: payment-postgres
+    ports:
+      - "7541:5432"
+    environment:
+      - POSTGRES_DB=paymentdb
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=12345
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+    networks:
+      - backend
+
+  payment-service:
+    build: payservice/server
+    image: payment
+    container_name: payment
+    ports:
+      - "8081:8081"
+    depends_on:
+      payment-database:
+        condition: service_healthy
+    environment:
+      - SPRING_R2DBC_URL=r2dbc:postgresql://payment-database:5432/paymentdb
+      - SPRING_R2DBC_USERNAME=user
+      - SPRING_R2DBC_PASSWORD=12345
+    networks:
+      - backend
+
   intershop-database:
     image: postgres:17.4
-    container_name: postgres
+    container_name: intershop-postgres
     ports:
       - "6541:5432"
     environment:
@@ -17,7 +51,7 @@ services:
       - backend
 
   intershop-service:
-    build: ./
+    build: shop/
     image: intershop
     container_name: intershop
     ports:
@@ -25,10 +59,13 @@ services:
     depends_on:
       intershop-database:
         condition: service_healthy
+      payment-service:
+        condition: service_started
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://intershop-database:5432/intershopdb
       - SPRING_R2DBC_USERNAME=user
       - SPRING_R2DBC_PASSWORD=12345
+      - PAYMENT_SERVER_URL=http://payment-service:8081
     networks:
       - backend
 

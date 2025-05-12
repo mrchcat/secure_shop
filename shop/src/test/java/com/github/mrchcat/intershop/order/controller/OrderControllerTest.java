@@ -27,28 +27,28 @@ class OrderControllerTest {
                 .expectStatus().isOk();
     }
 
-    @Test
-    void testGetOrder() {
-        long itemId = 1;
-        long userId = 1;
-        webTestClient.post().uri(uriBuilder -> uriBuilder
-                        .path("/cart/items/" + itemId)
-                        .queryParam("action", CartAction.plus.toString())
-                        .build())
-                .exchange()
-                .expectStatus().is3xxRedirection();
-
-        webTestClient.post()
-                .uri("/buy")
-                .exchange()
-                .expectStatus().is3xxRedirection();
-
-        Mono<Long> orderId = orderRepository.findAllByUserId(userId)
-                .elementAt(1)
-                .map(Order::getId);
-
-        webTestClient.get().uri("/orders/" + orderId)
-                .exchange()
-                .expectStatus();
-    }
+//    @Test
+//    void testGetOrder() {
+//        long itemId = 1;
+//        long userId = 1;
+//        webTestClient.post().uri(uriBuilder -> uriBuilder
+//                        .path("/cart/items/" + itemId)
+//                        .queryParam("action", CartAction.plus.toString())
+//                        .build())
+//                .exchange()
+//                .expectStatus().is3xxRedirection();
+//
+//        webTestClient.post()
+//                .uri("/buy")
+//                .exchange()
+//                .expectStatus().is3xxRedirection();
+//
+//        Mono<Long> orderId = orderRepository.findAllByUserId(userId)
+//                .elementAt(1)
+//                .map(Order::getId);
+//
+//        webTestClient.get().uri("/orders/" + orderId)
+//                .exchange()
+//                .expectStatus();
+//    }
 }

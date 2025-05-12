@@ -1,8 +1,8 @@
-package server.repository;
+package com.github.mrchcat.server.repository;
 
 
-import dto.Balance;
-import dto.Payment;
+import com.github.mrchcat.dto.Balance;
+import com.github.mrchcat.dto.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.r2dbc.core.DatabaseClient;
