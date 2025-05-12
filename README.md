@@ -36,4 +36,4 @@ application.items.load.enabled установлен в true и задан кат
 Схема базы данных платежного сервиса:
 ![](https://github.com/mrchcat/intershop_reactive_withRedisCache/blob/main/payservice/server/src/main/resources/schema.png)
 
-
+Загрузка исходных данных как в БД магазина, так и в платежный сервис осуществляется скриптом при загрузке приложения. 
