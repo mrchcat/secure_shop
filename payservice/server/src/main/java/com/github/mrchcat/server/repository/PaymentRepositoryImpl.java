@@ -68,8 +68,8 @@ public class PaymentRepositoryImpl implements PaymentRepository {
                 .bind("client", payment.getPayer())
                 .fetch()
                 .rowsUpdated()
-                .flatMap(updatedQuantity->{
-                    if(updatedQuantity!=1){
+                .flatMap(updatedQuantity -> {
+                    if (updatedQuantity != 1) {
                         return Mono.error(new IncorrectResultSizeDataAccessException(updatedQuantity.intValue()));
                     }
                     return Mono.empty();
@@ -79,8 +79,8 @@ public class PaymentRepositoryImpl implements PaymentRepository {
                 .bind("client", payment.getRecipient())
                 .fetch()
                 .rowsUpdated()
-                .flatMap(updatedQuantity->{
-                    if(updatedQuantity!=1){
+                .flatMap(updatedQuantity -> {
+                    if (updatedQuantity != 1) {
                         return Mono.error(new IncorrectResultSizeDataAccessException(updatedQuantity.intValue()));
                     }
                     return Mono.empty();

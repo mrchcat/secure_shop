@@ -12,7 +12,7 @@ public class ErrorResponse {
     private final String message;
 
     public ErrorResponse(Integer status, String message) {
-        this.timestamp=LocalDateTime.now().toString();
+        this.timestamp = LocalDateTime.now().toString();
         this.status = status;
         this.message = message;
     }

@@ -24,7 +24,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Mono<Payment> createPayment(Payment payment) {
         return payRep.hasClients(payment).flatMap(hasClients -> {
             if (!hasClients) {
-                return Mono.error(new ClientNotFoundException(payment.getPayer()+";"+payment.getRecipient()));
+                return Mono.error(new ClientNotFoundException(payment.getPayer() + ";" + payment.getRecipient()));
             }
             return payRep.getBalance(payment.getPayer()).flatMap(balance -> {
                 if (balance.getAmount().compareTo(payment.getAmount()) < 0) {

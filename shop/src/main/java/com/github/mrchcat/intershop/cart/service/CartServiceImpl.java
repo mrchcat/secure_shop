@@ -98,7 +98,7 @@ public class CartServiceImpl implements CartService {
         Flux<CartItemPrice> cartItemPrices = cartItemPriceRepository.findByCart(cart.map(Cart::getId));
         Mono<Balance> balance = userService.getUser(userId)
                 .flatMap(user -> paymentClient.getBalance(user.getPaymentId()))
-                .onErrorReturn(new Balance(null,null,BigDecimal.ZERO,""));
+                .onErrorReturn(new Balance(null, null, BigDecimal.ZERO, ""));
 
         return cartItemPrices
                 .collectList()
@@ -117,7 +117,7 @@ public class CartServiceImpl implements CartService {
                     BigDecimal totalAmount = list.stream()
                             .map(cip -> cip.getPrice().multiply(BigDecimal.valueOf(cip.getQuantity())))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    if(tuple.getT2().getClient()==null&&tuple.getT2().getAccount()==null){
+                    if (tuple.getT2().getClient() == null && tuple.getT2().getAccount() == null) {
                         return CartItemsDto.builder()
                                 .itemDtoList(CartItemPriceMatcher.toDto(list))
                                 .isCartEmpty(false)
@@ -133,7 +133,7 @@ public class CartServiceImpl implements CartService {
                             .isCartEmpty(false)
                             .total(totalAmount)
                             .enablePayment(isEnoughMoney)
-                            .payError(isEnoughMoney?PayServiceError.NO:PayServiceError.NOT_ENOUGH_MONEY)
+                            .payError(isEnoughMoney ? PayServiceError.NO : PayServiceError.NOT_ENOUGH_MONEY)
                             .build();
                 });
     }
