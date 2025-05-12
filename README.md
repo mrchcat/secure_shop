@@ -11,8 +11,8 @@
 Зависимости: Spring WebFlux, Spring Data, Thymeleaf, Netty, Redis, Postgres, Maven, JUnit, Lombok, Testcontainers
 
 Для запуска программы необходим Docker.
-1) Перейдите в папку /intershop и выполните команду "mvnw clean package". Дождитесь сборки приложения
-2) Выполните команду "docker-compose up" 
+1) Перейдите в папку /intershop и выполните команду "mvnw clean package". Дождитесь сборки приложения.
+2) Выполните команду "docker-compose up". 
 3) После запуска контейнеров магазин будет доступен по адресу http://localhost:8080
    В случае конфликта портов внесите исправления в docker-compose.yaml.
 

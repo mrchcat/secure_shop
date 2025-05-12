@@ -64,9 +64,6 @@ public class ItemPublicController {
         String search = searchAndPageDto.getSearch();
 
         Mono<PageWrapper> itemPage = itemService.getItems(userId, pageable, search);
-        itemPage.subscribe(pw -> System.out.println("Распечатка" + pw.getContent()));
-        itemPage = itemService.getItems(userId, pageable, search);
-
         return Mono.just(Rendering
                 .view("main")
                 .modelAttribute("sort", sortOrder.toString())
