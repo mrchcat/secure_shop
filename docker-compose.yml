@@ -83,8 +83,8 @@ services:
       - SPRING_R2DBC_URL=r2dbc:postgresql://intershop-database:5432/intershopdb
       - SPRING_R2DBC_USERNAME=user
       - SPRING_R2DBC_PASSWORD=12345
-      - SPRING_REDIS_HOST=intershop-cache
-      - SPRING_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_HOST=intershop-cache
+      - SPRING_DATA_REDIS_PORT=6379
       - PAYMENT_SERVER_URL=http://payment-service:8081
     networks:
       - backend
