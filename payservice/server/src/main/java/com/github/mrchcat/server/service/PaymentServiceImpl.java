@@ -3,14 +3,14 @@ package com.github.mrchcat.server.service;
 
 import com.github.mrchcat.dto.Balance;
 import com.github.mrchcat.dto.Payment;
+import com.github.mrchcat.server.exception.BalanceNotEnough;
+import com.github.mrchcat.server.exception.ClientNotFoundException;
+import com.github.mrchcat.server.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-import com.github.mrchcat.server.exception.BalanceNotEnough;
-import com.github.mrchcat.server.exception.ClientNotFoundException;
-import com.github.mrchcat.server.repository.PaymentRepository;
 
 import java.util.UUID;
 

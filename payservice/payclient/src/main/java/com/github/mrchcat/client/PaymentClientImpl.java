@@ -21,7 +21,7 @@ public class PaymentClientImpl implements PaymentClient {
     @Override
     public Mono<Payment> createPayment(Payment payment) {
         return webClient.post()
-                .uri("/payment/create")
+                .uri("/api/v1/payment/create")
                 .bodyValue(payment)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->
@@ -34,7 +34,7 @@ public class PaymentClientImpl implements PaymentClient {
     @Override
     public Mono<Balance> getBalance(UUID clientId) {
         return webClient.get()
-                .uri("balance/" + clientId)
+                .uri("/api/v1/balance/" + clientId)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->
                         response.bodyToMono(ErrorResponse.class)

@@ -1,0 +1,142 @@
+openapi: 3.0.3
+info:
+  title: Payment Service
+  description: part of the Intershop project that support payments for items
+  contact:
+    email: turkin.vs.@mail.ru
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1/api/v1
+tags:
+  - name: payment
+    description: support payments
+  - name: balance
+    description: get balance by user
+paths:
+  /payment/create:
+    post:
+      tags:
+        - payment
+      description: allow to make payments
+      operationId: makePayment
+      requestBody:
+        description: details of payment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Payer or/and recipent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '422':
+          description: Balance not enough for payment or other base constraint's violation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /balance/{clientId}:
+    get:
+      tags:
+        - balance
+      description: get balance for certain user of payment system
+      operationId: getBalance
+      parameters:
+        - name: clientId
+          in: path
+          description: identificator of account
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+
+    Payment:
+      type: object
+      properties:
+        paymentId:
+          type: string
+        payer:
+          type: string
+        recipient:
+          type: string
+        amount:
+          type: string
+
+    Balance:
+      type: object
+      properties:
+        client:
+          type: string
+        account:
+          type: integer
+          format: int64
+        amount:
+          type: string
+        currency:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+        status:
+          type: string
+        message:
+          type: string

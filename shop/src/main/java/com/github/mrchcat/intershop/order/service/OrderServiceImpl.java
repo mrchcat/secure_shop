@@ -1,6 +1,7 @@
 package com.github.mrchcat.intershop.order.service;
 
 import com.github.mrchcat.client.PaymentClient;
+import com.github.mrchcat.dto.Payment;
 import com.github.mrchcat.intershop.cart.domain.Cart;
 import com.github.mrchcat.intershop.cart.service.CartService;
 import com.github.mrchcat.intershop.item.domain.Item;
@@ -13,7 +14,6 @@ import com.github.mrchcat.intershop.order.repository.OrderItemRepository;
 import com.github.mrchcat.intershop.order.repository.OrderRepository;
 import com.github.mrchcat.intershop.user.domain.User;
 import com.github.mrchcat.intershop.user.service.UserService;
-import com.github.mrchcat.dto.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
