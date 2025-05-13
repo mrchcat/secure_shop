@@ -2,13 +2,10 @@ package com.github.mrchcat.intershop.order.controller;
 
 import com.github.mrchcat.client.PaymentClient;
 import com.github.mrchcat.dto.Payment;
-import com.github.mrchcat.intershop.AbstractTestContainerTest;
 import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.order.domain.Order;
 import com.github.mrchcat.intershop.order.repository.OrderRepository;
 import com.redis.testcontainers.RedisContainer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -40,7 +37,7 @@ class OrderControllerTest {
 
     @Container
     @ServiceConnection
-    public final static RedisContainer redis=new RedisContainer(DockerImageName.parse("redis:latest")).withExposedPorts(6379);;
+    public final static RedisContainer redis=new RedisContainer(DockerImageName.parse("redis:latest")).withExposedPorts(6379);
 
     @Autowired
     public  WebTestClient webTestClient;
@@ -50,12 +47,6 @@ class OrderControllerTest {
 
     @Autowired
     OrderRepository orderRepository;
-
-    @Test
-    void EmptyTest(){
-
-    }
-
 
     @Test
     void testGetOrders() {

@@ -5,6 +5,8 @@ import com.redis.testcontainers.RedisContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -14,17 +16,25 @@ import org.testcontainers.utility.DockerImageName;
 @ActiveProfiles("test")
 public abstract class AbstractTestContainerTest {
 
-    public final static PostgreSQLContainer postgres=new PostgreSQLContainer<>(DockerImageName.parse("postgres:17.4"));
+    public final static PostgreSQLContainer postgres =
+            new PostgreSQLContainer<>(DockerImageName.parse("postgres:17.4"));
 
-    public final static RedisContainer redis=new RedisContainer(DockerImageName.parse("redis:latest")).withExposedPorts(6379);;
+    public final static RedisContainer redis =
+            new RedisContainer(DockerImageName.parse("redis:8.0.0")).withExposedPorts(6379);
 
-    static{
+    static {
         postgres.start();
         redis.start();
     }
 
+    @DynamicPropertySource
+    static void redisProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.redis.host", redis::getHost);
+        registry.add("spring.data.redis.port", redis::getFirstMappedPort);
+    }
+
     @Autowired
-    public  WebTestClient webTestClient;
+    public WebTestClient webTestClient;
 
     @MockitoBean
     public PaymentClient paymentClient;

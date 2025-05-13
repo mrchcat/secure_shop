@@ -34,7 +34,7 @@ public class CartController {
                 .modelAttribute("total", cartItemsDto.map(CartItemsDto::getTotal))
                 .modelAttribute("empty", cartItemsDto.map(CartItemsDto::isCartEmpty))
                 .modelAttribute("enablePayment", cartItemsDto.map(CartItemsDto::isEnablePayment))
-                .modelAttribute("payServiceError",cartItemsDto.map(CartItemsDto::getPayError))
+                .modelAttribute("payServiceError", cartItemsDto.map(CartItemsDto::getPayError))
                 .build());
     }
 
@@ -48,7 +48,7 @@ public class CartController {
 
     @PostMapping("/buy")
     public Mono<Rendering> buyCart() {
-        orderService.buyCart(userId).subscribe(r-> System.out.println("Результат "+r.getUserId()));
+        orderService.buyCart(userId).subscribe(r -> System.out.println("Результат " + r.getUserId()));
         return orderService
                 .buyCart(userId)
                 .map(order -> Rendering.view("redirect:/orders/" + order.getId() + "?newOrder=true").build());

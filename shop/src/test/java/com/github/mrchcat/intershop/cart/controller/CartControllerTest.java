@@ -1,6 +1,5 @@
 package com.github.mrchcat.intershop.cart.controller;
 
-import com.github.mrchcat.dto.Balance;
 import com.github.mrchcat.dto.Payment;
 import com.github.mrchcat.intershop.AbstractTestContainerTest;
 import com.github.mrchcat.intershop.enums.CartAction;
@@ -81,7 +80,7 @@ public class CartControllerTest extends AbstractTestContainerTest {
     }
 
     @Test
-    void testBuy() throws InterruptedException {
+    void testBuy() {
         Payment payment = Payment.builder()
                 .paymentId(UUID.randomUUID())
                 .payer(UUID.randomUUID())

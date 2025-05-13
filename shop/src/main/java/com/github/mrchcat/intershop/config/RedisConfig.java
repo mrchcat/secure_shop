@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 public class RedisConfig {
 
     @Bean
-    public RedisCacheManagerBuilderCustomizer сacheCustomizer() {
+    public RedisCacheManagerBuilderCustomizer cacheCustomizer() {
         return builder -> builder
                 .withCacheConfiguration(ItemService.ITEM_DTO, RedisCacheConfiguration.defaultCacheConfig()
                         .entryTtl(Duration.of(1, ChronoUnit.MINUTES))

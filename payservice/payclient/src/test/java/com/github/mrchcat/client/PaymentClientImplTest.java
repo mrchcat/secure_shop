@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PaymentClientImplTest {
 
-    static MockWebServer server = new MockWebServer();
+    final static MockWebServer server = new MockWebServer();
     PaymentClient paymentClient;
 
     @BeforeAll
@@ -43,7 +43,7 @@ class PaymentClientImplTest {
         paymentClient.getBalance(clientId).block();
         RecordedRequest recordedRequest = server.takeRequest();
         assertEquals("GET", recordedRequest.getMethod());
-        assertEquals("/api/v1/balance/" + clientId, recordedRequest.getPath().toString());
+        assertEquals("/api/v1/balance/" + clientId, recordedRequest.getPath());
     }
 
     @Test
