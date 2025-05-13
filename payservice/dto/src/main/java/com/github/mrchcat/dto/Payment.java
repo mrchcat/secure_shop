@@ -3,6 +3,7 @@ package com.github.mrchcat.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Builder
+@EqualsAndHashCode
 public class Payment {
     @NotNull
     private UUID paymentId;

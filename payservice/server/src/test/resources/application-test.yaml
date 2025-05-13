@@ -1,0 +1,23 @@
+spring:
+  r2dbc:
+    url: r2dbc:tc:postgresql:///testdb?TC_IMAGE_TAG=17.4
+    username: user
+    password: 12345
+    pool:
+      enabled: true
+      initial-size: 10
+      max-size: 50
+      max-idle-time: 30s
+      max-life-time: 10m
+      validation-query: SELECT 1
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:database/schema.sql
+      data-locations: classpath:database/data.sql
+
+logging:
+  pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
+  level:
+    root: DEBUG
+    org.zalando.logbook: DEBUG

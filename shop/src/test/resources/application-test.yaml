@@ -1,15 +1,15 @@
 spring:
-  r2dbc:
-    url: r2dbc:tc:postgresql:///testdb?TC_IMAGE_TAG=17.4
-    username: user
-    password: 12345
-    pool:
-      enabled: true                               # Включение пула соединений
-      initial-size: 10                            # Начальное количество соединений в пуле
-      max-size: 50                                # Максимальное количество соединений
-      max-idle-time: 30s                          # Время бездействия соединения перед закрытием
-      max-life-time: 10m                          # Максимальное время жизни соединения
-      validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
+#  r2dbc:
+#    url: r2dbc:tc:postgresql:///testdb?TC_IMAGE_TAG=17.4
+#    username: user
+#    password: 12345
+#    pool:
+#      enabled: true                               # Включение пула соединений
+#      initial-size: 10                            # Начальное количество соединений в пуле
+#      max-size: 50                                # Максимальное количество соединений
+#      max-idle-time: 30s                          # Время бездействия соединения перед закрытием
+#      max-life-time: 10m                          # Максимальное время жизни соединения
+#      validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
   sql:
     init:
       mode: always

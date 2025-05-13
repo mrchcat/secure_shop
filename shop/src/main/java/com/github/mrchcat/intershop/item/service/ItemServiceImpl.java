@@ -42,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     private int itemsPerLine;
 
     @Override
-    @Cacheable(value = "itemDto", key = "#itemId")
+    @Cacheable(value = ITEM_DTO, key = "#itemId")
     public Mono<ItemDto> getItem(long userId, long itemId) {
         Mono<Item> item = itemRepository
                 .findById(itemId)
@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Cacheable(value = "itemDtoPage", key = "{#pageable,#search}")
+    @Cacheable(value = PAGE_ITEM_DTO, key = "{#pageable,#search}")
     public Mono<PageWrapper> getItems(long userId, Pageable pageable, String search) {
         Flux<Item> items = (search.isBlank())
                 ? itemRepository.findAllBy(pageable)

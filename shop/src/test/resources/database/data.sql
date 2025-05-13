@@ -1,5 +1,6 @@
-INSERT INTO users (email,name)
-VALUES ('anna@mail.ru','Anna'),('boris@mail.ru','Boris');
+INSERT INTO users (email,name,payment_id)
+VALUES ('anna@mail.ru','Anna','db1673e9-bf97-4dfa-acdb-88a280d4d144'),('boris@mail.ru','Boris','73c474e3-264f-4d8d-8f5d-4f566eb341a0');
+
 
 INSERT INTO carts (user_id)
 VALUES (1),(2);
@@ -24,4 +25,3 @@ VALUES ('16ab55a7-45f6-44a8-873c-7a0b44346b3e','Товар3','Описание 3
 
 INSERT INTO items(article_number, name,description,picture_path,price,unit)
 VALUES ('e3776711-6359-4f22-878d-bf290d052c85','Товар4','Описание 4','images/nophoto.jpg',13000,'PIECE');
-

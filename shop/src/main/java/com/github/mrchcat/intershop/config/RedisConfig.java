@@ -2,6 +2,7 @@ package com.github.mrchcat.intershop.config;
 
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.PageWrapper;
+import com.github.mrchcat.intershop.item.service.ItemService;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,27 +17,21 @@ import java.time.temporal.ChronoUnit;
 public class RedisConfig {
 
     @Bean
-    public RedisCacheManagerBuilderCustomizer itemDtoCacheCustomizer() {
-        return builder -> builder.withCacheConfiguration(
-                "itemDto",
-                RedisCacheConfiguration.defaultCacheConfig()
+    public RedisCacheManagerBuilderCustomizer сacheCustomizer() {
+        return builder -> builder
+                .withCacheConfiguration(ItemService.ITEM_DTO, RedisCacheConfiguration.defaultCacheConfig()
                         .entryTtl(Duration.of(1, ChronoUnit.MINUTES))
                         .serializeValuesWith(RedisSerializationContext.SerializationPair
                                 .fromSerializer(new Jackson2JsonRedisSerializer<>(ItemDto.class))
                         )
-        );
-    }
-
-    @Bean
-    public RedisCacheManagerBuilderCustomizer pageCacheCustomizer() {
-        return builder -> builder.withCacheConfiguration(
-                "itemDtoPage",
-                RedisCacheConfiguration.defaultCacheConfig()
-                        .entryTtl(Duration.of(1, ChronoUnit.MINUTES))
-                        .serializeValuesWith(RedisSerializationContext.SerializationPair
-                                .fromSerializer(new Jackson2JsonRedisSerializer<>(PageWrapper.class))
-                        )
-        );
+                )
+                .withCacheConfiguration(
+                        ItemService.PAGE_ITEM_DTO, RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.of(1, ChronoUnit.MINUTES))
+                                .serializeValuesWith(RedisSerializationContext.SerializationPair
+                                        .fromSerializer(new Jackson2JsonRedisSerializer<>(PageWrapper.class))
+                                )
+                );
     }
 
 }

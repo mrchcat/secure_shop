@@ -1,21 +1,31 @@
 package com.github.mrchcat.intershop.cart.controller;
 
+import com.github.mrchcat.dto.Balance;
+import com.github.mrchcat.dto.Payment;
+import com.github.mrchcat.intershop.AbstractTestContainerTest;
 import com.github.mrchcat.intershop.enums.CartAction;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mockito;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
+import java.util.UUID;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-class CartControllerTest {
+public class CartControllerTest extends AbstractTestContainerTest {
 
-    @Autowired
-    private WebTestClient webTestClient;
+    @BeforeAll
+    static void beforeAll() {
+        postgres.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        postgres.stop();
+    }
 
     @Test
     void testGetCart() {
@@ -32,7 +42,7 @@ class CartControllerTest {
     }
 
     @Test
-    void testUpdateCartPlus()  {
+    void testUpdateCartPlus() {
         long itemId = 1;
         webTestClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -45,7 +55,7 @@ class CartControllerTest {
     }
 
     @Test
-    void testUpdateCartMinus()  {
+    void testUpdateCartMinus() {
         long itemId = 1;
         webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
                         .queryParam("action", CartAction.plus.toString())
@@ -70,19 +80,27 @@ class CartControllerTest {
                 .expectStatus().is3xxRedirection();
     }
 
-//    @Test
-//    void testBuy()  {
-//        long itemId = 1;
-//        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
-//                        .queryParam("action", CartAction.plus.toString())
-//                        .build())
-//                .exchange()
-//                .expectStatus().is3xxRedirection();
-//
-//        webTestClient.post().uri("/buy")
-//                .exchange()
-//                .expectStatus().is3xxRedirection();
-//    }
+    @Test
+    void testBuy() throws InterruptedException {
+        Payment payment = Payment.builder()
+                .paymentId(UUID.randomUUID())
+                .payer(UUID.randomUUID())
+                .recipient(UUID.randomUUID())
+                .amount(BigDecimal.TEN)
+                .build();
 
+        Mockito.when(paymentClient.createPayment(Mockito.any())).thenReturn(Mono.just(payment));
+
+        long itemId = 2;
+        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/cart/items/" + itemId)
+                        .queryParam("action", CartAction.plus.toString())
+                        .build())
+                .exchange()
+                .expectStatus().is3xxRedirection();
+
+        webTestClient.post().uri("/buy")
+                .exchange()
+                .expectStatus().is3xxRedirection();
+    }
 
 }

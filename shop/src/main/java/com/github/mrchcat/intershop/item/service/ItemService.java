@@ -10,6 +10,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ItemService {
+    String ITEM_DTO = "itemDto";
+    String PAGE_ITEM_DTO = "itemDtoPage";
 
     Mono<ItemDto> getItem(long userId, long itemId);
 
