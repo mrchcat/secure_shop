@@ -8,7 +8,6 @@ import com.github.mrchcat.server.exception.ClientNotFoundException;
 import com.github.mrchcat.server.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
@@ -20,7 +19,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository payRep;
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     public Mono<Payment> createPayment(Payment payment) {
         return payRep.hasClients(payment).flatMap(hasClients -> {
             if (!hasClients) {
