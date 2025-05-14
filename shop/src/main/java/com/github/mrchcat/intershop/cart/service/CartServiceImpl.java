@@ -88,8 +88,6 @@ public class CartServiceImpl implements CartService {
     }
 
     private CartItem applyAction(CartItem cartItem, CartAction action) {
-        System.out.println("applyAction");
-        System.out.println(cartItem);
         cartItem.setQuantity(Math.max(0, cartItem.getQuantity() + action.delta));
         return cartItem;
     }
