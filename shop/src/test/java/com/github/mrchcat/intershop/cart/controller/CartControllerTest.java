@@ -3,9 +3,7 @@ package com.github.mrchcat.intershop.cart.controller;
 import com.github.mrchcat.dto.Payment;
 import com.github.mrchcat.intershop.AbstractTestContainerTest;
 import com.github.mrchcat.intershop.enums.CartAction;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
@@ -15,16 +13,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public class CartControllerTest extends AbstractTestContainerTest {
-
-    @BeforeAll
-    static void beforeAll() {
-        postgres.start();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        postgres.stop();
-    }
 
     @Test
     void testGetCart() {
