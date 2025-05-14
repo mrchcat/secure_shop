@@ -2,6 +2,7 @@ package com.github.mrchcat.intershop.item.repository;
 
 
 import com.github.mrchcat.intershop.item.domain.Item;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -10,6 +11,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+
+import static com.github.mrchcat.intershop.item.service.ItemService.ITEM;
+import static com.github.mrchcat.intershop.item.service.ItemService.PAGE_ITEM;
 
 
 public interface ItemRepository extends ReactiveSortingRepository<Item, Long>, ReactiveCrudRepository<Item, Long> {
@@ -20,8 +24,10 @@ public interface ItemRepository extends ReactiveSortingRepository<Item, Long>, R
             WHERE LOWER(name) LIKE LOWER(CONCAT('%',:search,'%'))
                OR LOWER(description) LIKE LOWER(CONCAT('%',:search,'%'))
             """)
+    @Cacheable(value = PAGE_ITEM, key = "{#pageable,#search}")
     Flux<Item> findAllWithSearch(String search, Pageable pageable);
 
+    @Cacheable(value = PAGE_ITEM, key = "#pageable")
     Flux<Item> findAllBy(Pageable pageable);
 
     @Query("""
@@ -47,5 +53,16 @@ public interface ItemRepository extends ReactiveSortingRepository<Item, Long>, R
             WHERE i.article_number=:uuid
             """)
     Mono<Boolean> hasUuid(UUID uuid);
+
+    Mono<Item> findById(long itemId);
+
+
+    @Query("""
+            SELECT *
+            FROM items
+            WHERE id=:itemId
+            """)
+    @Cacheable(value = ITEM, key = "#itemId")
+    Mono<Item> findByIdCachable(long itemId);
 
 }

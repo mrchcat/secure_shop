@@ -5,15 +5,14 @@ import com.github.mrchcat.intershop.enums.CartAction;
 import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.NewItemDto;
-import com.github.mrchcat.intershop.item.dto.PageWrapper;
 import com.github.mrchcat.intershop.item.matcher.ItemMatcher;
 import com.github.mrchcat.intershop.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.codec.multipart.FilePart;
@@ -41,11 +40,9 @@ public class ItemServiceImpl implements ItemService {
     @Value("${application.items.perline:3}")
     private int itemsPerLine;
 
-    @Override
-    @Cacheable(value = ITEM_DTO, key = "#itemId")
-    public Mono<ItemDto> getItem(long userId, long itemId) {
+    public Mono<ItemDto> getItemDto(long userId, long itemId) {
         Mono<Item> item = itemRepository
-                .findById(itemId)
+                .findByIdCachable(itemId)
                 .switchIfEmpty(Mono.error(new NoSuchElementException(String.format("товар c id=%s не найден", itemId))));
         return ItemMatcher.toDto(item, cartService.getCartItemsForUser(userId));
     }
@@ -61,8 +58,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Cacheable(value = PAGE_ITEM_DTO, key = "{#pageable,#search}")
-    public Mono<PageWrapper> getItems(long userId, Pageable pageable, String search) {
+    public Mono<Page<List<ItemDto>>> getItemDtos(long userId, Pageable pageable, String search) {
         Flux<Item> items = (search.isBlank())
                 ? itemRepository.findAllBy(pageable)
                 : itemRepository.findAllWithSearch(search, pageable);
@@ -75,8 +71,7 @@ public class ItemServiceImpl implements ItemService {
                 .collectList();
         return Mono
                 .zip(itemPageContent, totalItems)
-                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()))
-                .map(PageWrapper::new);
+                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
     }
 
     @Override
@@ -84,8 +79,8 @@ public class ItemServiceImpl implements ItemService {
     public Mono<Void> changeCart(long userId, long itemId, CartAction action) {
         Mono<Item> item = itemRepository
                 .findById(itemId)
+                .log()
                 .switchIfEmpty(Mono.error(new NoSuchElementException(String.format("товар c id=%s не найден", itemId))));
-        item.subscribe(System.out::println);
         return cartService.changeCart(userId, item, action);
     }
 

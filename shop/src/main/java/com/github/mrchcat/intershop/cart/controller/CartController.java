@@ -48,7 +48,6 @@ public class CartController {
 
     @PostMapping("/buy")
     public Mono<Rendering> buyCart() {
-        orderService.buyCart(userId).subscribe(r -> System.out.println("Результат " + r.getUserId()));
         return orderService
                 .buyCart(userId)
                 .map(order -> Rendering.view("redirect:/orders/" + order.getId() + "?newOrder=true").build());

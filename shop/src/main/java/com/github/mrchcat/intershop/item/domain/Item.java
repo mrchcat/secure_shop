@@ -16,6 +16,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ import java.util.UUID;
 @AllArgsConstructor
 
 @Table(name = "items")
-public class Item {
+public class Item implements Serializable {
     @Id
     private long id;
 

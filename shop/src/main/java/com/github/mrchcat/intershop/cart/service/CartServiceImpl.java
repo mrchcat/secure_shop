@@ -20,12 +20,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.SignalType;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +63,8 @@ public class CartServiceImpl implements CartService {
                 .findByUserId(userId)
                 .switchIfEmpty(Mono.error(new NoSuchElementException(
                         String.format("корзина для пользователя id=%s не найден", userId))));
-        Mono<CartItem> cartItem = cartItemRepository.findByCartAndItem(cart.map(Cart::getId), item.map(Item::getId));
+        Mono<CartItem> cartItem = cartItemRepository.findByCartAndItem(cart.map(Cart::getId), item.map(Item::getId))
+                .log("КартАйтем", Level.INFO, SignalType.ON_COMPLETE, SignalType.ON_ERROR);
         return switch (action) {
             case plus -> cartItem
                     .switchIfEmpty(Mono
@@ -85,6 +88,8 @@ public class CartServiceImpl implements CartService {
     }
 
     private CartItem applyAction(CartItem cartItem, CartAction action) {
+        System.out.println("applyAction");
+        System.out.println(cartItem);
         cartItem.setQuantity(Math.max(0, cartItem.getQuantity() + action.delta));
         return cartItem;
     }

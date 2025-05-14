@@ -2,11 +2,12 @@ package com.github.mrchcat.intershop.item.controller;
 
 import com.github.mrchcat.intershop.enums.SortOrder;
 import com.github.mrchcat.intershop.item.dto.ActionDto;
-import com.github.mrchcat.intershop.item.dto.PageWrapper;
+import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.SearchAndPageDto;
 import com.github.mrchcat.intershop.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class ItemPublicController {
 
     @GetMapping("/items/{id}")
     public Mono<Rendering> getItem(@PathVariable("id") long itemId) {
-        var itemDto = itemService.getItem(userId, itemId);
+        var itemDto = itemService.getItemDto(userId, itemId);
         return Mono.just(Rendering
                 .view("item")
                 .modelAttribute("item", itemDto)
@@ -59,7 +62,7 @@ public class ItemPublicController {
                 sortOrder.sort);
         String search = searchAndPageDto.getSearch();
 
-        Mono<PageWrapper> itemPage = itemService.getItems(userId, pageable, search);
+        Mono<Page<List<ItemDto>>> itemPage = itemService.getItemDtos(userId, pageable, search);
         return Mono.just(Rendering
                 .view("main")
                 .modelAttribute("sort", sortOrder.toString())

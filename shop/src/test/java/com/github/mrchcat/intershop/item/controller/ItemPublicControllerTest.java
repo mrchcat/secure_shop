@@ -2,6 +2,7 @@ package com.github.mrchcat.intershop.item.controller;
 
 import com.github.mrchcat.intershop.AbstractTestContainerTest;
 import com.github.mrchcat.intershop.enums.CartAction;
+import com.github.mrchcat.intershop.item.service.ItemService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +105,7 @@ class ItemPublicControllerTest extends AbstractTestContainerTest {
                     Assertions.assertNotNull(body);
                     Assertions.assertTrue(body.contains("Витрина товаров"));
                 });
-        Assertions.assertTrue(redisTemplate.hasKey("itemDto::" + itemId));
+        Assertions.assertTrue(redisTemplate.hasKey(ItemService.ITEM + "::" + itemId));
     }
 
 

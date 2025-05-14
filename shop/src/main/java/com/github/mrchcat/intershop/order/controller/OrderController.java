@@ -33,7 +33,6 @@ public class OrderController {
     Mono<Rendering> getOrders(@PathVariable("id") long orderId,
                               @RequestParam(name = "newOrder", defaultValue = "false") boolean newOrder) {
         Mono<OrderDto> orderDto = orderService.getOrder(userId, orderId);
-        orderDto.subscribe(System.out::println);
         return Mono.just(Rendering.view("order")
                 .modelAttribute("order", orderDto)
                 .modelAttribute("newOrder", newOrder)

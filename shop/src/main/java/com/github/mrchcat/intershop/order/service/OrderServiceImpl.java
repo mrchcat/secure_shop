@@ -69,7 +69,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Mono<List<OrderDto>> getOrders(long userId) {
         Flux<Order> orders = orderRepository.findAllByUserId(userId);
-        orders.subscribe(System.out::println);
         Flux<OrderItem> orderItems = orderItemRepository.findAllByOrders(orders.map(Order::getId));
         Flux<Item> items = itemService.getItemsForOrders(orders.map(Order::getId));
         return OrderMatcher.toDto(orders, orderItems, items)
@@ -105,7 +104,6 @@ public class OrderServiceImpl implements OrderService {
                 .zipWith(order)
                 .doOnNext(tuple -> {
                     tuple.getT1().forEach(oi -> oi.setOrderId(tuple.getT2().getId()));
-                    tuple.getT1().forEach(System.out::println);
                 })
                 .doOnNext(tuple -> {
                             BigDecimal totalSum = tuple.getT1()
