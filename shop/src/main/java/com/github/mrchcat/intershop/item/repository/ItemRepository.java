@@ -18,17 +18,6 @@ import static com.github.mrchcat.intershop.item.service.ItemService.PAGE_ITEM;
 
 public interface ItemRepository extends ReactiveSortingRepository<Item, Long>, ReactiveCrudRepository<Item, Long> {
 
-    @Query("""
-            SELECT id, article_number, name,description,picture_path,price,unit
-            FROM items
-            WHERE LOWER(name) LIKE LOWER(CONCAT('%',:search,'%'))
-               OR LOWER(description) LIKE LOWER(CONCAT('%',:search,'%'))
-            """)
-    @Cacheable(value = PAGE_ITEM, key = "{#pageable,#search}")
-    Flux<Item> findAllWithSearch(String search, Pageable pageable);
-
-    @Cacheable(value = PAGE_ITEM, key = "#pageable")
-    Flux<Item> findAllBy(Pageable pageable);
 
     @Query("""
             SELECT i.id, i.article_number, i.name,i.description,i.picture_path,i.price,i.unit
@@ -53,16 +42,4 @@ public interface ItemRepository extends ReactiveSortingRepository<Item, Long>, R
             WHERE i.article_number=:uuid
             """)
     Mono<Boolean> hasUuid(UUID uuid);
-
-    Mono<Item> findById(long itemId);
-
-
-    @Query("""
-            SELECT *
-            FROM items
-            WHERE id=:itemId
-            """)
-    @Cacheable(value = ITEM, key = "#itemId")
-    Mono<Item> findByIdCachable(long itemId);
-
 }

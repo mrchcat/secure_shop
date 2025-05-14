@@ -6,6 +6,7 @@ import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.NewItemDto;
 import com.github.mrchcat.intershop.item.matcher.ItemMatcher;
+import com.github.mrchcat.intershop.item.repository.ItemCachedRepository;
 import com.github.mrchcat.intershop.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,7 @@ import java.util.UUID;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CartService cartService;
+    private final ItemCachedRepository itemCachedRepository;
 
     @Value("${application.items.images.directory}")
     private String IMAGE_DIRECTORY;
@@ -41,8 +43,8 @@ public class ItemServiceImpl implements ItemService {
     private int itemsPerLine;
 
     public Mono<ItemDto> getItemDto(long userId, long itemId) {
-        Mono<Item> item = itemRepository
-                .findByIdCachable(itemId)
+        Mono<Item> item = itemCachedRepository
+                .findById(itemId)
                 .switchIfEmpty(Mono.error(new NoSuchElementException(String.format("товар c id=%s не найден", itemId))));
         return ItemMatcher.toDto(item, cartService.getCartItemsForUser(userId));
     }
@@ -60,8 +62,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Mono<Page<List<ItemDto>>> getItemDtos(long userId, Pageable pageable, String search) {
         Flux<Item> items = (search.isBlank())
-                ? itemRepository.findAllBy(pageable)
-                : itemRepository.findAllWithSearch(search, pageable);
+                ? itemCachedRepository.findAllBy(pageable)
+                : itemCachedRepository.findAllWithSearch(search, pageable);
 
         Mono<Long> totalItems = itemRepository.count();
 
