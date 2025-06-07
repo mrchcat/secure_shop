@@ -1,8 +1,11 @@
 spring:
   r2dbc:
-    url: ${urlPostgresShop}
-    username: ${usernamePostgresShop}
-    password: ${passwordPostgresShop}
+#    url: ${urlPostgresShop}
+#    username: ${usernamePostgresShop}
+#    password: ${passwordPostgresShop}
+    url: r2dbc:postgresql://localhost:5432/intershop
+    username: postgres
+    password: Inushing1980
 
     pool:
       enabled: true                               # Включение пула соединений
@@ -27,11 +30,10 @@ spring:
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
-    root: INFO
-    org.zalando.logbook: INFO
+    root: DEBUG
+    org.zalando.logbook: DEBUG
 
 application:
-  user_id: 2  #  id текущего пользователя
   shop:
     payment_id: "623ff0e5-2069-4051-88dc-fea52a85ffab"
   items:

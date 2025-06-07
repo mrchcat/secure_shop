@@ -7,27 +7,42 @@
 </head>
 
 <body>
-<a href="/orders" style="float:right;">
+<a href="/orders" style="float:right;" th:if="${isAuth}">
     <b>ЗАКАЗЫ &cudarrr;</b>
 </a>
-<a href="/cart/items" style="float:right;">
+<a href="/cart/items" style="float:right;" th:if="${isAuth}">
     <b>КОРЗИНА &cudarrr;</b>
 </a>
 <a href="/main/items" style="float:right;">
     <b>ГЛАВНАЯ &cudarrr;</b>
 </a>
-<div style="width:70%;margin-left:auto;margin-right:auto;">
+<a href="/shop-login" style="float:right;" th:if="${!isAuth}">
+    <b>ВОЙТИ &cudarrr;</b>
+</a>
+<a href="/logout" style="float:right;" th:if="${isAuth}" onclick="document.getElementById('logoutForm').submit(); return false;">
+    <b>ВЫЙТИ &cudarrr;</b>
+</a>
+
+<form th:action="@{/logout}" method="post" th:if="${isAuth}" style="float:right;display:none" id="logoutForm" >
+    <button style="color:#f00;border:0px #000 solid;background-color:#fff;">ВЫЙТИ</button>
+</form>
+
+
+
+<div>
     <p>
         <img width="300" height="300" th:src="${'http://localhost:8080/'+item.getImgPath()}">
     </p>
     <p>
         <b th:text="${item.getTitle()}"></b>
+    </p>
+    <p>
         <b th:text="${item.getPrice()}+' руб.'" style="text-align:right;"></b>
     </p>
     <p>
         <span th:text="${item.getDescription()}"></span>
     </p>
-    <form th:action="${'/items/'+item.getId()}" method="post">
+    <form th:action="${'/items/'+item.getId()}" method="post" th:if="${isAuth}">
         <button name="action" value="minus">-</button>
         <span th:text="${item.getCount()}"></span>
         <button name="action" value="plus">+</button>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8"/>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Please sign in</title>
+    <link href="/default-ui.css" rel="stylesheet"/>
+</head>
+<body>
+
+<a href="/main/items" style="float:right;">
+    <b>ГЛАВНАЯ &cudarrr;</b>
+</a>
+
+<div class="content">
+    <form class="login-form" method="post" th:action="@{/shop-login}">
+        <h2>Введите данные нового пользователя</h2>
+        <p>
+            <label for="username" class="screenreader">Username</label>
+            <input type="text" id="username" name="username" placeholder="Username" required autofocus>
+        </p>
+        <p>
+            <label for="password" class="screenreader">Password</label>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+        </p>
+        <button type="submit" class="primary">Sign in</button>
+    </form>
+    <br>
+    <a href="/user/registration">
+        <button>Зарегистрировать нового пользователя</button>
+    </a>
+</div>
+</body>
+</html>

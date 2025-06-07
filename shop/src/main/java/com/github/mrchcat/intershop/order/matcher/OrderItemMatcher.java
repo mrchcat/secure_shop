@@ -8,7 +8,7 @@ import com.github.mrchcat.intershop.order.dto.OrderItemDto;
 public class OrderItemMatcher {
     public static OrderItemDto toDto(OrderItem orderItem, Item item) {
         return OrderItemDto.builder()
-                .item(ItemMatcher.toDto(item))
+                .item(ItemMatcher.toDtoWoCounts(item))
                 .count(orderItem.getQuantity())
                 .unit(orderItem.getUnit())
                 .sum(orderItem.getSum())

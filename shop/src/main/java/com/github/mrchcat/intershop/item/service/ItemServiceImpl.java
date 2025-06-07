@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,13 +41,32 @@ public class ItemServiceImpl implements ItemService {
     private String IMAGE_DIRECTORY;
 
     @Value("${application.items.perline:3}")
-    private int itemsPerLine;
+    private int ITEMS_PER_LINE;
 
-    public Mono<ItemDto> getItemDto(long userId, long itemId) {
-        Mono<Item> item = itemCachedRepository
-                .findById(itemId)
+    @Override
+    public Mono<ItemDto> getItemDto(Optional<Long> userId, long itemId) {
+        Mono<Item> item = itemCachedRepository.findById(itemId)
                 .switchIfEmpty(Mono.error(new NoSuchElementException(String.format("товар c id=%s не найден", itemId))));
-        return ItemMatcher.toDto(item, cartService.getCartItemsForUser(userId));
+        var userCartItems = userId.map(cartService::getCartItemsForUser).orElse(Mono.empty());
+        return ItemMatcher.toDto(item, userCartItems);
+    }
+
+    @Override
+    public Mono<Page<List<ItemDto>>> getItemDtos(Optional<Long> userId, Pageable pageable, String search) {
+        var items = (search.isBlank())
+                ? itemCachedRepository.findAllBy(pageable)
+                : itemCachedRepository.findAllWithSearch(search, pageable);
+
+        var totalItems = itemRepository.count();
+        var userCartItems = userId.map(cartService::getCartItemsForUser).orElse(Mono.empty());
+        var itemPageContent = ItemMatcher
+                .toDtos(items, userCartItems)
+                .buffer(ITEMS_PER_LINE)
+                .collectList();
+
+        return Mono
+                .zip(itemPageContent, totalItems)
+                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
     }
 
     @Override
@@ -57,23 +77,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Flux<Item> getItemsForOrders(Flux<Long> orderIds) {
         return itemRepository.findAllForOrders(orderIds);
-    }
-
-    @Override
-    public Mono<Page<List<ItemDto>>> getItemDtos(long userId, Pageable pageable, String search) {
-        Flux<Item> items = (search.isBlank())
-                ? itemCachedRepository.findAllBy(pageable)
-                : itemCachedRepository.findAllWithSearch(search, pageable);
-
-        Mono<Long> totalItems = itemRepository.count();
-
-        Mono<List<List<ItemDto>>> itemPageContent = ItemMatcher
-                .toDto(items, cartService.getCartItemsForUser(userId))
-                .buffer(itemsPerLine)
-                .collectList();
-        return Mono
-                .zip(itemPageContent, totalItems)
-                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
     }
 
     @Override

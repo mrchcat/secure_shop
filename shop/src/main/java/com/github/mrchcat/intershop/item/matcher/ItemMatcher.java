@@ -5,58 +5,52 @@ import com.github.mrchcat.intershop.item.dto.ItemDto;
 import com.github.mrchcat.intershop.item.dto.NewItemDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class ItemMatcher {
 
+    public static ItemDto toDtoWoCounts(Item item) {
+        long itemId = item.getId();
+        return ItemDto.builder()
+                .id(itemId)
+                .title(item.getTitle())
+                .description(item.getDescription())
+                .imgPath(item.getImgPath())
+                .price(item.getPrice())
+                .unit(item.getUnit())
+                .build();
+    }
+
+    private static ItemDto toDto(Item item, Map<Long, Long> counts) {
+        ItemDto itemDto = toDtoWoCounts(item);
+        long itemId = item.getId();
+        itemDto.setCount(counts.getOrDefault(itemId, 0L));
+        itemDto.setInCart(counts.containsKey(itemId));
+        return itemDto;
+    }
+
     public static Mono<ItemDto> toDto(Mono<Item> item, Mono<Map<Long, Long>> counts) {
-        return Mono
-                .zip(item, counts)
-                .map(tuple -> ItemDto.builder()
-                        .id(tuple.getT1().getId())
-                        .title(tuple.getT1().getTitle())
-                        .description(tuple.getT1().getDescription())
-                        .imgPath(tuple.getT1().getImgPath())
-                        .price(tuple.getT1().getPrice())
-                        .count(tuple.getT2().getOrDefault(tuple.getT1().getId(), 0L))
-                        .inCart(tuple.getT2().containsKey(tuple.getT1().getId()))
-                        .unit(tuple.getT1().getUnit())
-                        .build());
+        return counts.defaultIfEmpty(Collections.emptyMap())
+                .zipWith(item)
+                .map(ItemMatcher::tupleToDto);
     }
 
-    public static ItemDto toDto(Item item, Map<Long, Long> counts) {
-        long itemId = item.getId();
-        return ItemDto.builder()
-                .id(itemId)
-                .title(item.getTitle())
-                .description(item.getDescription())
-                .imgPath(item.getImgPath())
-                .price(item.getPrice())
-                .count(counts.getOrDefault(itemId, 0L))
-                .inCart(counts.containsKey(itemId))
-                .unit(item.getUnit())
-                .build();
+    public static Flux<ItemDto> toDtos(Flux<Item> items, Mono<Map<Long, Long>> counts) {
+        return counts.defaultIfEmpty(Collections.emptyMap()).repeat()
+                .zipWith(items)
+                .map(ItemMatcher::tupleToDto);
     }
 
-    public static Flux<ItemDto> toDto(Flux<Item> items, Mono<Map<Long, Long>> counts) {
-        var repeatableCounts = counts.repeat();
-        return items
-                .zipWith(repeatableCounts)
-                .map(tuple -> ItemMatcher.toDto(tuple.getT1(), tuple.getT2()));
+    private static ItemDto tupleToDto(Tuple2<Map<Long, Long>, Item> tuple) {
+        if (tuple.getT1().isEmpty()) {
+            return ItemMatcher.toDtoWoCounts(tuple.getT2());
+        }
+        return ItemMatcher.toDto(tuple.getT2(), tuple.getT1());
     }
 
-    public static ItemDto toDto(Item item) {
-        long itemId = item.getId();
-        return ItemDto.builder()
-                .id(itemId)
-                .title(item.getTitle())
-                .description(item.getDescription())
-                .imgPath(item.getImgPath())
-                .price(item.getPrice())
-                .unit(item.getUnit())
-                .build();
-    }
 
     public static Item toItem(NewItemDto dto) {
         return Item.builder()

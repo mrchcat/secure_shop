@@ -2,8 +2,6 @@ package com.github.mrchcat.intershop.item.repository;
 
 
 import com.github.mrchcat.intershop.item.domain.Item;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.data.repository.reactive.ReactiveSortingRepository;
@@ -11,9 +9,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
-
-import static com.github.mrchcat.intershop.item.service.ItemService.ITEM;
-import static com.github.mrchcat.intershop.item.service.ItemService.PAGE_ITEM;
 
 
 public interface ItemRepository extends ReactiveSortingRepository<Item, Long>, ReactiveCrudRepository<Item, Long> {

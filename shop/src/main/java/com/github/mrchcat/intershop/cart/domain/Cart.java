@@ -22,4 +22,7 @@ public class Cart {
     @Column("user_id")
     private long userId;
 
+    public Cart(long userId) {
+        this.userId = userId;
+    }
 }

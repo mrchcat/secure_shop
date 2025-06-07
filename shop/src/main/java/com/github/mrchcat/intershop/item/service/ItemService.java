@@ -10,14 +10,15 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemService {
     String ITEM = "item";
     String PAGE_ITEM = "itemPage";
 
-    Mono<ItemDto> getItemDto(long userId, long itemId);
+    Mono<ItemDto> getItemDto(Optional<Long> userId, long itemId);
 
-    Mono<Page<List<ItemDto>>> getItemDtos(long userId, Pageable pageable, String search);
+    Mono<Page<List<ItemDto>>> getItemDtos(Optional<Long> userId, Pageable pageable, String search);
 
     Mono<Void> changeCart(long userId, long itemId, CartAction action);
 

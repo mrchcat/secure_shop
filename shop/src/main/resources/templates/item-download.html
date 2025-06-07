@@ -7,6 +7,19 @@
     <title>Загрузка товаров</title>
 </head>
 <body>
+
+<a href="/shop-login" style="float:right;" th:if="${!isAuth}">
+    <b>ВОЙТИ &cudarrr;</b>
+</a>
+<a href="/logout" style="float:right;" th:if="${isAuth}" onclick="document.getElementById('logoutForm').submit(); return false;">
+    <b>ВЫЙТИ &cudarrr;</b>
+</a>
+
+<form th:action="@{/logout}" method="post" th:if="${isAuth}" style="float:right;display:none" id="logoutForm" >
+    <button style="color:#f00;border:0px #000 solid;background-color:#fff;">ВЫЙТИ</button>
+</form>
+
+
 <div class="form-container" id="itemDownload">
     <h2>Страница загрузки товаров в базу данных</h2>
     <form th:action="@{/admin/items/download}" method="POST" enctype="multipart/form-data">
