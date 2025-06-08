@@ -16,11 +16,14 @@ services:
       - ./keycloak/config/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://0.0.0.0:8080/realms/master" ]
-      start_period: 10s
-      interval: 30s
+      test:
+        [
+          "CMD-SHELL",
+          'exec 3<>/dev/tcp/localhost/8080; echo -e "GET /health/ready HTTP/1.1\nhost: localhost:8080\n" >&3; timeout --preserve-status 1 cat <&3 | grep -m 1 status | grep -m 1 UP; ERROR=$?; exec 3<&-; exec 3>&-; exit $ERROR'
+        ]
+      interval: 10s
+      timeout: 10s
       retries: 3
-      timeout: 5s
     networks:
       - backend
 
@@ -107,7 +110,7 @@ services:
       payment-service:
         condition: service_started
       intershop-keycloak:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://intershop-database:5432/intershopdb
       - SPRING_R2DBC_USERNAME=user
