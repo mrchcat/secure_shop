@@ -41,7 +41,7 @@ public class UserController {
                     .build());
         }
         return userService.addNewUser(newUser)
-                .then(Mono.just(Rendering.view("/shop-login").build()))
+                .then(Mono.just(Rendering.view("redirect:/shop-login").build()))
                 .doOnError(IncorrectFormData.class, e -> {
                     FieldError fieldError = new FieldError("userRegisterDto", e.getField(), e.getMessage());
                     bindingResult.addError(fieldError);
