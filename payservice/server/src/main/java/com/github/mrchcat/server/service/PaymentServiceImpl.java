@@ -16,28 +16,31 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-    private final PaymentRepository payRep;
+    private final PaymentRepository paymentRepository;
 
     @Override
     @Transactional
     public Mono<Payment> createPayment(Payment payment) {
-        return payRep.hasClients(payment).flatMap(hasClients -> {
+        return paymentRepository.hasClients(payment).flatMap(hasClients -> {
             if (!hasClients) {
                 return Mono.error(new ClientNotFoundException(payment.getPayer() + ";" + payment.getRecipient()));
             }
-            return payRep.getBalance(payment.getPayer()).flatMap(balance -> {
+            return paymentRepository.getBalance(payment.getPayer()).flatMap(balance -> {
                 if (balance.getAmount().compareTo(payment.getAmount()) < 0) {
                     return Mono.error(new BalanceNotEnough(payment.getPaymentId().toString()));
                 }
-                return payRep.transfer(payment);
+                return paymentRepository.transfer(payment);
             });
         });
     }
 
     @Override
     public Mono<Balance> getBalance(UUID clientId) {
-        return payRep.getBalance(clientId)
-                .switchIfEmpty(Mono.error(new ClientNotFoundException(clientId.toString())));
+        return paymentRepository.hasClient(clientId).flatMap(hasClient -> {
+            if (hasClient) {
+                return paymentRepository.getBalance(clientId).switchIfEmpty(Mono.error(new InternalError()));
+            }
+            return Mono.error(new ClientNotFoundException(String.valueOf(clientId)));
+        });
     }
-
 }

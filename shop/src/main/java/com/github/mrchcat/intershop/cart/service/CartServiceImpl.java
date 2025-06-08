@@ -16,6 +16,7 @@ import com.github.mrchcat.intershop.item.domain.Item;
 import com.github.mrchcat.intershop.order.domain.OrderItem;
 import com.github.mrchcat.intershop.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -37,6 +38,9 @@ public class CartServiceImpl implements CartService {
     private final CartItemPriceRepository cartItemPriceRepository;
     private final UserService userService;
     private final PaymentClient paymentClient;
+
+    @Value("${spring.security.oauth2.client.registration.shop.client-id}")
+    private String oAuthClientId;
 
     @Override
     public Mono<Cart> getCartForUser(long userId) {
@@ -100,7 +104,7 @@ public class CartServiceImpl implements CartService {
                         String.format("корзина для пользователя id=%s не найден", userId))));
         Flux<CartItemPrice> cartItemPrices = cartItemPriceRepository.findByCart(cart.map(Cart::getId));
         Mono<Balance> balance = userService.getUser(userId)
-                .flatMap(user -> paymentClient.getBalance(user.getPaymentId()))
+                .flatMap(user -> paymentClient.getBalance(user.getPaymentId(), oAuthClientId))
                 .onErrorReturn(new Balance(null, null, BigDecimal.ZERO, ""));
 
         return cartItemPrices

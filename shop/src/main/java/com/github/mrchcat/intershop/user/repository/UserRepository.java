@@ -10,6 +10,6 @@ public interface UserRepository extends ReactiveCrudRepository<User, Long> {
 
     Mono<Boolean> existsByEmail(String email);
 
-    Mono<Boolean> existsByPaymentId(UUID PaymentId);
+    Mono<Boolean> existsByPaymentId(UUID paymentId);
 
 }

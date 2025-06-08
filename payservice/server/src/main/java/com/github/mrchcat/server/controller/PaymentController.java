@@ -6,7 +6,6 @@ import com.github.mrchcat.server.service.PaymentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,15 +23,13 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/api/v1/payment/create")
-    Mono<ResponseEntity<Payment>> createPayment(@Valid @RequestBody Payment payment) {
-        return paymentService.createPayment(payment)
-                .map(ResponseEntity::ok);
+    Mono<Payment> createPayment(@Valid @RequestBody Payment payment) {
+        return paymentService.createPayment(payment);
     }
 
     @GetMapping("/api/v1/balance/{clientId}")
-    Mono<ResponseEntity<Balance>> getBalance(@PathVariable @NotNull UUID clientId) {
-        return paymentService.getBalance(clientId)
-                .map(ResponseEntity::ok);
+    Mono<Balance> getBalance(@PathVariable @NotNull UUID clientId) {
+        return paymentService.getBalance(clientId);
     }
 
 

@@ -53,6 +53,20 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     }
 
     @Override
+    public Mono<Boolean> hasClient(UUID clientId) {
+        String selectQuery = """
+                SELECT id
+                FROM clients
+                WHERE client_uuid=:clientId
+                """;
+        return databaseClient.sql(selectQuery)
+                .bind("clientId", clientId)
+                .fetch()
+                .rowsUpdated()
+                .map(numOfRows -> numOfRows.equals(1L));
+    }
+
+    @Override
     public Mono<Payment> transfer(Payment payment) {
         String changeAmountQuery = """
                 UPDATE accounts

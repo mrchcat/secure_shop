@@ -13,6 +13,8 @@ public interface PaymentRepository {
 
     Mono<Boolean> hasClients(Payment payment);
 
+    Mono<Boolean> hasClient(UUID clientId);
+
     Mono<Payment> transfer(Payment payment);
 
 }

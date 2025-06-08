@@ -28,7 +28,7 @@ public class CartController {
     @GetMapping("/cart/items")
     public Mono<Rendering> getCartItems(Authentication authentication) {
         Mono<CartItemsDto> cartItemsDto = cartService.getCartItems(getUserId(authentication));
-        var isAuth = Mono.just(authentication != null && authentication.isAuthenticated());
+        var isAuth = Mono.just(authentication.isAuthenticated());
         return Mono.just(Rendering
                 .view("cart")
                 .modelAttribute("items", cartItemsDto.map(CartItemsDto::getItemDtoList))

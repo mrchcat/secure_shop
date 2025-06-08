@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
                             var newCredentials = credentialsMapper.toCommonUserCredentials(newUser, user.getId());
                             return credentialsService.save(newCredentials);
                         }))
-                .flatMap(cr->addCartService.createCartForUser(cr.getUserId()))
+                .flatMap(cr -> addCartService.createCartForUser(cr.getUserId()))
                 .then();
     }
 }

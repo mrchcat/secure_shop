@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -42,8 +43,8 @@ public class SecurityConfig {
                                 .maximumSessionsExceededHandler(maximumSessionsExceededHandler)
                                 .sessionRegistry(new InMemoryReactiveSessionRegistry())
                         ))
+                .oauth2Client(Customizer.withDefaults())
                 .formLogin(login -> login.loginPage("/shop-login"))
-//                .logout(Customizer.withDefaults())
                 .logout(logout -> logout
                         .logoutSuccessHandler(new ShopLogoutHandler()))
                 .headers(headers -> headers.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable))

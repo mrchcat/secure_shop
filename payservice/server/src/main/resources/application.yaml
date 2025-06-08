@@ -2,12 +2,18 @@ server:
   port: 8081
 spring:
   r2dbc:
-#    url: ${urlPostgresPayment}
-#    username: ${usernamePostgresPayment}
-#    password: ${passwordPostgresPayment}
+    #    url: ${urlPostgresPayment}
+    #    username: ${usernamePostgresPayment}
+    #    password: ${passwordPostgresPayment}
     url: r2dbc:postgresql://localhost:5432/intershop
     username: postgres
     password: Inushing1980
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/master
 
     pool:
       enabled: true                               # Включение пула соединений

@@ -19,19 +19,19 @@
 <a href="/shop-login" style="float:right;" th:if="${!isAuth}">
     <b>ВОЙТИ &cudarrr;</b>
 </a>
-<a href="/logout" style="float:right;" th:if="${isAuth}" onclick="document.getElementById('logoutForm').submit(); return false;">
+<a href="/logout" style="float:right;" th:if="${isAuth}"
+   onclick="document.getElementById('logoutForm').submit(); return false;">
     <b>ВЫЙТИ &cudarrr;</b>
 </a>
 
-<form th:action="@{/logout}" method="post" th:if="${isAuth}" style="float:right;display:none" id="logoutForm" >
+<form th:action="@{/logout}" method="post" th:if="${isAuth}" style="float:right;display:none" id="logoutForm">
     <button style="color:#f00;border:0px #000 solid;background-color:#fff;">ВЫЙТИ</button>
 </form>
 
 
-
 <div>
     <p>
-        <img width="300" height="300" th:src="${'http://localhost:8080/'+item.getImgPath()}">
+        <img width="300" height="300" th:src="${'/'+item.getImgPath()}">
     </p>
     <p>
         <b th:text="${item.getTitle()}"></b>

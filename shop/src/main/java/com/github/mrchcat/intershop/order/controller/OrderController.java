@@ -24,7 +24,7 @@ public class OrderController {
     @GetMapping("/orders")
     Mono<Rendering> getOrders(Authentication authentication) {
         Mono<List<OrderDto>> orderDtos = orderService.getOrders(getUserId(authentication));
-        var isAuth = Mono.just(authentication != null && authentication.isAuthenticated());
+        var isAuth = Mono.just(authentication.isAuthenticated());
         return Mono.just(Rendering
                 .view("orders")
                 .modelAttribute("orders", orderDtos)
@@ -37,7 +37,7 @@ public class OrderController {
                               @RequestParam(name = "newOrder", defaultValue = "false") boolean newOrder,
                               Authentication authentication) {
         Mono<OrderDto> orderDto = orderService.getOrder(getUserId(authentication), orderId);
-        var isAuth = Mono.just(authentication != null && authentication.isAuthenticated());
+        var isAuth = Mono.just(authentication.isAuthenticated());
         return Mono.just(Rendering
                 .view("order")
                 .modelAttribute("order", orderDto)

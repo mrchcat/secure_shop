@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface PaymentClient {
-    Mono<Payment> createPayment(Payment payment);
+    Mono<Payment> createPayment(Payment payment, String oAuthClientId);
 
-    Mono<Balance> getBalance(UUID clientID);
+    Mono<Balance> getBalance(UUID clientID, String oAuthClientId);
 }

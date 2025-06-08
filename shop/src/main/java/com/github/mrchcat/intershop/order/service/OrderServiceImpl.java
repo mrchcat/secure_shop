@@ -39,6 +39,8 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentClient paymentClient;
     @Value("${application.shop.payment_id}")
     private UUID shopPaymentId;
+    @Value("${spring.security.oauth2.client.registration.shop.client-id}")
+    private String oAuthClientId;
 
     @Override
     @Transactional
@@ -121,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
                                             .recipient(shopPaymentId)
                                             .amount(tuple.getT2().getTotalSum())
                                             .build())
-                                    .flatMap(paymentClient::createPayment);
+                                    .flatMap(pmnt -> paymentClient.createPayment(pmnt, oAuthClientId));
                             return payment.thenMany(saveAllOrderItems(tuple.getT1()))
                                     .then(cartService.clearCart(cart))
                                     .then(saveOrder(tuple.getT2()));
