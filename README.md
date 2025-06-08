@@ -47,12 +47,12 @@ application.items.load.enabled установлен в true и задан кат
 что в его БД содержится соответствующий client_id (можно добавить через соответствующий data.sql)  
 
 Платежный сервис реализует следующий API:
-[спецификация OpenApi](https://github.com/mrchcat/intershop_reactive_withRedisCache/blob/main/payservice/PayServiceOpenApi.yaml)
+[спецификация OpenApi](https://github.com/mrchcat/secure_shop/blob/main/payservice/PayServiceOpenApi.yaml)
 
 Схема базы данных основного приложения:
-![](https://github.com/mrchcat/intershop_reactive_withRedisCache/blob/main/shop/src/main/resources/schema.png)
+![](https://github.com/mrchcat/secure_shop/blob/main/shop/src/main/resources/schema.png)
 
 Схема базы данных платежного сервиса:
-![](https://github.com/mrchcat/intershop_reactive_withRedisCache/blob/main/payservice/server/src/main/resources/schema.png)
+![](https://github.com/mrchcat/secure_shop/blob/main/payservice/server/src/main/resources/schema.png)
 
 Загрузка исходных данных как в БД магазина, так и в платежный сервис осуществляется скриптом при загрузке приложения. 
