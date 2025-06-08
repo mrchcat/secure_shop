@@ -1,5 +1,29 @@
 services:
 
+  intershop-keycloak:
+    container_name: intershop-keycloak
+    image: quay.io/keycloak/keycloak:26.2.5
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/config/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://0.0.0.0:8080/realms/master" ]
+      start_period: 10s
+      interval: 30s
+      retries: 3
+      timeout: 5s
+    networks:
+      - backend
+
   payment-database:
     image: postgres:17.4
     container_name: payment-postgres
@@ -26,10 +50,13 @@ services:
     depends_on:
       payment-database:
         condition: service_healthy
+      intershop-keycloak:
+        condition: service_started
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://payment-database:5432/paymentdb
       - SPRING_R2DBC_USERNAME=user
       - SPRING_R2DBC_PASSWORD=12345
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI=http://intershop-keycloak:8080/realms/master
     networks:
       - backend
 
@@ -71,13 +98,15 @@ services:
     image: intershop
     container_name: intershop
     ports:
-      - "8080:8080"
+      - "8082:8082"
     depends_on:
       intershop-database:
         condition: service_healthy
       intershop-cache:
         condition: service_healthy
       payment-service:
+        condition: service_started
+      intershop-keycloak:
         condition: service_started
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://intershop-database:5432/intershopdb
@@ -86,6 +115,7 @@ services:
       - SPRING_DATA_REDIS_HOST=intershop-cache
       - SPRING_DATA_REDIS_PORT=6379
       - PAYMENT_SERVER_URL=http://payment-service:8081
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER-URI=http://intershop-keycloak:8080/realms/master
     networks:
       - backend
 
