@@ -4,7 +4,6 @@ import com.github.mrchcat.intershop.AbstractTestContainerTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 public class SecurityTest extends AbstractTestContainerTest {

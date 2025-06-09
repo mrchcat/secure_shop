@@ -1,12 +1,11 @@
 package com.github.mrchcat.client;
 
 import com.github.mrchcat.dto.Payment;
-import com.nimbusds.oauth2.sdk.token.AccessToken;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,25 +13,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentClientImplTest {
@@ -43,7 +35,7 @@ class PaymentClientImplTest {
     final static MockWebServer server = new MockWebServer();
     PaymentClient paymentClient;
 
-    String oAuthClientId="some token";
+    final String oAuthClientId="some token";
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -76,8 +68,8 @@ class PaymentClientImplTest {
         server.enqueue(new MockResponse().setResponseCode(404));
         paymentClient.getBalance(clientId,oAuthClientId).block();
         RecordedRequest recordedRequest = server.takeRequest();
-        assertEquals("GET", recordedRequest.getMethod());
-        assertEquals("/api/v1/balance/" + clientId, recordedRequest.getPath());
+        Assertions.assertEquals("GET", recordedRequest.getMethod());
+        Assertions.assertEquals("/api/v1/balance/" + clientId, recordedRequest.getPath());
     }
 
     @Test
@@ -95,7 +87,7 @@ class PaymentClientImplTest {
         server.enqueue(new MockResponse().setResponseCode(404));
         paymentClient.createPayment(payment,oAuthClientId).block();
         RecordedRequest recordedRequest = server.takeRequest();
-        assertEquals("POST", recordedRequest.getMethod());
+        Assertions.assertEquals("POST", recordedRequest.getMethod());
     }
 
 }

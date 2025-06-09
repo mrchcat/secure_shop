@@ -5,7 +5,6 @@ import com.github.mrchcat.intershop.AbstractTestContainerTest;
 import com.github.mrchcat.intershop.enums.CartAction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;

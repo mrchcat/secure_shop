@@ -25,14 +25,11 @@ public class PaymentClientImpl implements PaymentClient {
     public PaymentClientImpl(String serverUrl, ReactiveOAuth2AuthorizedClientManager manager) {
         this.webClient = WebClient.create(serverUrl);
         this.manager = manager;
-        System.out.println(this.manager);
     }
 
     @Override
     public Mono<Balance> getBalance(UUID clientId, String oAuthClientId) {
-        System.out.println("проверка баланса");
         return getToken(oAuthClientId).flatMap(accessToken -> {
-            System.out.println("Токен=" + accessToken);
             return webClient.get()
                     .uri(GET_BALANCE_API_URI + clientId)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)

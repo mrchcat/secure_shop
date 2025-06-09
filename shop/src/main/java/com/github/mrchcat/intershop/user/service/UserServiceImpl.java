@@ -1,13 +1,13 @@
 package com.github.mrchcat.intershop.user.service;
 
 import com.github.mrchcat.intershop.cart.service.AddCartService;
+import com.github.mrchcat.intershop.exceptions.IncorrectFormData;
 import com.github.mrchcat.intershop.secure.mapper.CredentialsMapper;
 import com.github.mrchcat.intershop.secure.service.CredentialsService;
 import com.github.mrchcat.intershop.user.domain.User;
 import com.github.mrchcat.intershop.user.dto.UserRegisterDto;
 import com.github.mrchcat.intershop.user.mapper.UserMapper;
 import com.github.mrchcat.intershop.user.repository.UserRepository;
-import com.github.mrchcat.intershop.exceptions.IncorrectFormData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

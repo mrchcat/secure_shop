@@ -14,7 +14,6 @@ public class AddCartServiceImpl implements AddCartService {
 
     @Override
     public Mono<Cart> createCartForUser(long userId) {
-        System.out.println("создаем корзину " + userId);
         return cartRepository.save(new Cart(userId));
     }
 }
