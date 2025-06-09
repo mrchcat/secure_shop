@@ -3,7 +3,11 @@ package com.github.mrchcat.intershop;
 import com.github.mrchcat.client.PaymentClient;
 import com.github.mrchcat.intershop.config.TestSecurityConfig;
 import com.redis.testcontainers.RedisContainer;
+import dasniko.testcontainers.keycloak.KeycloakContainer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.reactive.ReactiveOAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.reactive.ReactiveOAuth2ResourceServerAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,9 +29,14 @@ public abstract class AbstractTestContainerTest {
     public final static RedisContainer redis =
             new RedisContainer(DockerImageName.parse("redis:8.0.0"));
 
+    public final static KeycloakContainer keycloak = new KeycloakContainer()
+            .withRealmImportFile("realm-export.json");
+
     static {
         postgres.start();
         redis.start();
+
+        keycloak.start();
     }
 
     @DynamicPropertySource
@@ -38,6 +47,9 @@ public abstract class AbstractTestContainerTest {
         registry.add("spring.r2dbc.url", AbstractTestContainerTest::getPostgresUrl);
         registry.add("spring.r2dbc.username", postgres::getUsername);
         registry.add("spring.r2dbc.password", postgres::getPassword);
+
+        registry.add("spring.security.oauth2.client.provider.keycloak.issuer-uri",
+                () -> keycloak.getAuthServerUrl() + "/realms/master");
     }
 
     static String getPostgresUrl() {
