@@ -1,4 +1,4 @@
-package exceptions;
+package com.github.mrchcat.intershop.exceptions;
 
 import lombok.Getter;
 import lombok.Setter;

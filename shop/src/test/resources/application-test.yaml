@@ -4,8 +4,8 @@ spring:
       mode: always
       schema-locations: classpath:database/schema.sql
       data-locations: classpath:database/data.sql
-  thymeleaf:
-    encoding: UTF-8
+  main:
+    allow-bean-definition-overriding: true
 
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
@@ -14,7 +14,6 @@ logging:
     org.zalando.logbook: DEBUG
 
 application:
-  user_id: 2  #  id текущего пользователя
   shop:
     payment_id: "623ff0e5-2069-4051-88dc-fea52a85ffab"
   items:
@@ -24,3 +23,22 @@ application:
 payment:
   server:
     url: "http://127.0.0.1:8081"   #  адрес сервиса оплаты
+
+
+#*************************************
+
+#spring:
+#  security:
+#    oauth2:
+#      client:
+#        provider:
+#          keycloak:
+#            issuer-uri: http://localhost:8080/realms/master # Адрес сервера авторизации для получения токена
+#        registration:
+#          shop: # Описание клиента OAuth2
+#            provider: keycloak
+#            authorizationGrantType: client_credentials
+#            client-id: shop
+#            client-secret: DfWZwIKw5E0MdPrsmMXHlRMjoTpmrDir
+#            clientAuthenticationMethod: client_secret_post # Способ передачи секрета
+##            scope: profile

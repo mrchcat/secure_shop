@@ -25,6 +25,7 @@ public class PaymentClientImpl implements PaymentClient {
     public PaymentClientImpl(String serverUrl, ReactiveOAuth2AuthorizedClientManager manager) {
         this.webClient = WebClient.create(serverUrl);
         this.manager = manager;
+        System.out.println(this.manager);
     }
 
     @Override

@@ -51,7 +51,6 @@ public class CartController {
 
     @PostMapping("/buy")
     public Mono<Rendering> buyCart(Authentication authentication) {
-        System.out.println("печать buyCart");
         return orderService
                 .buyCart(getUserId(authentication))
                 .map(order -> Rendering.view("redirect:/orders/" + order.getId() + "?newOrder=true").build());

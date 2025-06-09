@@ -7,7 +7,7 @@ import com.github.mrchcat.intershop.user.domain.User;
 import com.github.mrchcat.intershop.user.dto.UserRegisterDto;
 import com.github.mrchcat.intershop.user.mapper.UserMapper;
 import com.github.mrchcat.intershop.user.repository.UserRepository;
-import exceptions.IncorrectFormData;
+import com.github.mrchcat.intershop.exceptions.IncorrectFormData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

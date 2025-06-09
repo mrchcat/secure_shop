@@ -15,6 +15,8 @@ spring:
       mode: always
       schema-locations: classpath:database/schema.sql
       data-locations: classpath:database/data.sql
+  main:
+    allow-bean-definition-overriding: true
 
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"

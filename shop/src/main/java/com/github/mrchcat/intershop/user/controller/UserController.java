@@ -2,7 +2,7 @@ package com.github.mrchcat.intershop.user.controller;
 
 import com.github.mrchcat.intershop.user.dto.UserRegisterDto;
 import com.github.mrchcat.intershop.user.service.UserService;
-import exceptions.IncorrectFormData;
+import com.github.mrchcat.intershop.exceptions.IncorrectFormData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
