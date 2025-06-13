@@ -29,17 +29,15 @@ public class PaymentClientImpl implements PaymentClient {
 
     @Override
     public Mono<Balance> getBalance(UUID clientId, String oAuthClientId) {
-        return getToken(oAuthClientId).flatMap(accessToken -> {
-            return webClient.get()
-                    .uri(GET_BALANCE_API_URI + clientId)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::isError, response ->
-                            response.bodyToMono(ErrorResponse.class)
-                                    .flatMap(re -> Mono.error(new Exception(re.toString())))
-                    )
-                    .bodyToMono(Balance.class);
-        });
+        return getToken(oAuthClientId).flatMap(accessToken -> webClient.get()
+                .uri(GET_BALANCE_API_URI + clientId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, response ->
+                        response.bodyToMono(ErrorResponse.class)
+                                .flatMap(re -> Mono.error(new Exception(re.toString())))
+                )
+                .bodyToMono(Balance.class));
     }
 
     @Override

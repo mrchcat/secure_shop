@@ -84,7 +84,6 @@ public class ItemServiceImpl implements ItemService {
     public Mono<Void> changeCart(long userId, long itemId, CartAction action) {
         Mono<Item> item = itemRepository
                 .findById(itemId)
-                .log()
                 .switchIfEmpty(Mono.error(new NoSuchElementException(String.format("товар c id=%s не найден", itemId))));
         return cartService.changeCart(userId, item, action);
     }

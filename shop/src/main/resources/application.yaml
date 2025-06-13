@@ -6,12 +6,9 @@ server:
 
 spring:
   r2dbc:
-#    url: ${urlPostgresShop}
-#    username: ${usernamePostgresShop}
-#    password: ${passwordPostgresShop}
-    url: r2dbc:postgresql://localhost:5432/intershop
-    username: postgres
-    password: Inushing1980
+    url: ${urlPostgresShop}
+    username: ${usernamePostgresShop}
+    password: ${passwordPostgresShop}
     pool:
       enabled: true                               # Включение пула соединений
       initial-size: 10                            # Начальное количество соединений в пуле
@@ -47,8 +44,8 @@ spring:
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
-    root: DEBUG
-    org.zalando.logbook: DEBUG
+    root: INFO
+    org.zalando.logbook: INFO
 
 application:
   shop:

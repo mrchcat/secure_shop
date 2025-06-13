@@ -8,24 +8,21 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/realms/master
   r2dbc:
-    #    url: ${urlPostgresPayment}
-    #    username: ${usernamePostgresPayment}
-    #    password: ${passwordPostgresPayment}
-    url: r2dbc:postgresql://localhost:5432/intershop
-    username: postgres
-    password: Inushing1980
-    pool:
-      enabled: true                               # Включение пула соединений
-      initial-size: 10                            # Начальное количество соединений в пуле
-      max-size: 50                                # Максимальное количество соединений
-      max-idle-time: 30s                          # Время бездействия соединения перед закрытием
-      max-life-time: 10m                          # Максимальное время жизни соединения
-      validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
+     url: ${urlPostgresPayment}
+     username: ${usernamePostgresPayment}
+     password: ${passwordPostgresPayment}
+     pool:
+       enabled: true                               # Включение пула соединений
+       initial-size: 10                            # Начальное количество соединений в пуле
+       max-size: 50                                # Максимальное количество соединений
+       max-idle-time: 30s                          # Время бездействия соединения перед закрытием
+       max-life-time: 10m                          # Максимальное время жизни соединения
+       validation-query: SELECT 1                  # SQL-запрос для проверки работоспособности соединения
   sql:
     init.mode: always
 
 logging:
   pattern.file: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
   level:
-    root: DEBUG
-    org.zalando.logbook: DEBUG
+    root: INFO
+    org.zalando.logbook: INFO

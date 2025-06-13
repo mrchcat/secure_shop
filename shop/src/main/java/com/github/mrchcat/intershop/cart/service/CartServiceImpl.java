@@ -67,8 +67,7 @@ public class CartServiceImpl implements CartService {
                 .findByUserId(userId)
                 .switchIfEmpty(Mono.error(new NoSuchElementException(
                         String.format("корзина для пользователя id=%s не найден", userId))));
-        Mono<CartItem> cartItem = cartItemRepository.findByCartAndItem(cart.map(Cart::getId), item.map(Item::getId))
-                .log("КартАйтем", Level.INFO, SignalType.ON_COMPLETE, SignalType.ON_ERROR);
+        Mono<CartItem> cartItem = cartItemRepository.findByCartAndItem(cart.map(Cart::getId), item.map(Item::getId));
         return switch (action) {
             case plus -> cartItem
                     .switchIfEmpty(Mono

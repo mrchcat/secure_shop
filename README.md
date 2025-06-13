@@ -1,4 +1,4 @@
-# Internet shop prototype
+# Internet shop
 
 Сервис представляет собой фронтэнд и бэкэнд интернет-магазина, а также прототип платежного сервиса. 
 Реализована авторизация, вывод списка товаров, пагинация, поиск, сортировка, корзина заказов, страница с перечнем совершенных ранее заказов,
@@ -56,3 +56,7 @@ application.items.load.enabled установлен в true и задан кат
 ![](https://github.com/mrchcat/secure_shop/blob/main/payservice/server/src/main/resources/schema.png)
 
 Загрузка исходных данных как в БД магазина, так и в платежный сервис осуществляется скриптом при загрузке приложения. 
+
+Cхема аутентификации:
+![](https://github.com/mrchcat/secure_shop/blob/main/payservice/readme/auto_general.png)
+![](https://github.com/mrchcat/secure_shop/blob/main/payservice/readme/auto_details.png)
