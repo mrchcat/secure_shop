@@ -58,5 +58,5 @@ application.items.load.enabled установлен в true и задан кат
 Загрузка исходных данных как в БД магазина, так и в платежный сервис осуществляется скриптом при загрузке приложения. 
 
 Cхема аутентификации:
-![](https://github.com/mrchcat/secure_shop/blob/main/payservice/readme/auto_general.png)
-![](https://github.com/mrchcat/secure_shop/blob/main/payservice/readme/auto_details.png)
+![](https://github.com/mrchcat/secure_shop/blob/main/readme/auto_general.png)
+![](https://github.com/mrchcat/secure_shop/blob/main/readme/auto_details.png)
